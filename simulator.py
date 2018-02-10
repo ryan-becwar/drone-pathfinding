@@ -31,16 +31,16 @@ class Simulator:
         
         x,z,y = self.drone_pos
         xn,zn,yn = x+dx, z+dz, y+dy
-        if 0 <= xn <= WIDTH and 0 <= zn <= LENGTH and 0 <= yn <= HEIGHT: #drone inbounds
-            if self.map[xn][zn][yn] != " ":
+        if 0 <= xn < WIDTH and 0 <= zn < LENGTH and 0 <= yn < HEIGHT and (not self.attached or 0 <= yn -1): #drone inbounds
+            if not (self.map[xn][zn][yn] == " " or ((dx, dy, dz) == (0,-1,0) and self.attached)):
                 print("Collision: %s", (xn, yn, zn))
                 return
             if self.attached:
-                if 0 <= yn-1:
-                    if self.map[xn][zn][yn-1] != " ":
-                        print("Block collision: %s", (xn, yn-1, zn))
-                        return
+                if self.map[xn][zn][yn-1] == " " or (dx, dy, dz) == (0,1,0):
                     self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] #swap block below
+                else:
+                    print("Block collision: %s", (xn, yn-1, zn))
+                    return
 
             self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y] #swap drone position
             self.drone_pos = (xn, zn, yn)
