@@ -1,12 +1,26 @@
+WIDTH = 11 #x dimension
+LENGTH = 11 #z dimension
+HEIGHT = 5 #y dimension (vertical)
+
 class Simulator:
-    def __init__(self, state):
-        self.map = state
+    def __init__(self, filename):
+        self.initialize(filename)
         self.attached = False
         self.drone_pos = self.find_drone()
 
     
-    def initialize(filename):
-        return
+    #TODO: check if configuration is valid, no floating blocks
+    def initialize(self, filename):
+        self.map = [[[" " for y in range(HEIGHT)] for z in range(LENGTH)] for x in range(WIDTH)]
+        with open(filename, 'r') as file_in:
+            for line in file_in.readlines():
+                data = line.split()
+                x,z,y,item = (int(data[0]), int(data[1]), int(data[2]), data[3])
+                self.map[x][z][y] = item
+
+    def writeout(self, filename):
+        with open(filename, 'w') as out:
+            out.writelines(['{0} {1} {2} {3}\n'.format(item[0], item[1], item[2], item[3]) for item in self.to_list()])
 
     def state(self):
         return self.map
@@ -23,7 +37,6 @@ class Simulator:
         return
 
 
-    #TODO: bug where collision is detected when drone moves down while carrying block, going to sleep now
     def move(self, dx, dy, dz):
         if abs(dx) > 1 or abs (dy) > 1 or abs (dz) > 1:
             print("Invalid move magnitude: %s", (dx, dy, dz))
@@ -75,20 +88,7 @@ class Simulator:
 
         return (-1,-1,-1)
 
+    #returns the state as a list of objects
+    def to_list(self):
+        return([(x, z, y, self.map[x][z][y]) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if self.map[x][z][y] != " "])
 
-
-WIDTH = 11 #x dimension
-LENGTH = 11 #z dimension
-HEIGHT = 5 #y dimension (vertical)
-
-startState = [[[" " for y in range(HEIGHT)] for z in range(LENGTH)] for x in range(WIDTH)]
-
-startState[5][5][4] = "d"
-startState[5][5][3] = "yellow"
-startState[5][5][0] = "blue"
-
-print(startState)
-sim = Simulator(startState)
-
-print(sim)
-print(sim.find_drone())
