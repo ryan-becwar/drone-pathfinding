@@ -23,7 +23,7 @@ def simulatedAnneal(startState, possibleActionsF, stateFromActionAppliedF, heuri
         nextStateCost = heuristicF(nextState)
         dE = nextStateCost - currentStateCost
         
-        probabilityOfAcceptingRandomAction = np.exp(-dE/T)
+        probabilityOfAcceptingRandomAction = np.exp(dE/T)
         
         if dE < 0 or probabilityOfAcceptingRandomAction > random():
             nodesExplored = nodesExplored + 1
