@@ -23,7 +23,7 @@ class Simulator:
             out.writelines(['{0} {1} {2} {3}\n'.format(item[0], item[1], item[2], item[3]) for item in self.to_list()])
 
     def state(self):
-        return self.map
+        return (self.map, self.attached)
 
     def attach(self):
         x, z, y = self.find_drone()#change to drone_pos once move implemented
@@ -34,33 +34,33 @@ class Simulator:
             else:
                 print("No block below drone")
 
-        return
+        return (self.to_list, self.attached)
 
 
     def move(self, dx, dy, dz):
         if abs(dx) > 1 or abs (dy) > 1 or abs (dz) > 1:
             print("Invalid move magnitude: %s", (dx, dy, dz))
-            return
+            return (self.to_list, self.attached)
         
         x,z,y = self.drone_pos
         xn,zn,yn = x+dx, z+dz, y+dy
         if 0 <= xn < WIDTH and 0 <= zn < LENGTH and 0 <= yn < HEIGHT and (not self.attached or 0 <= yn -1): #drone inbounds
             if not (self.map[xn][zn][yn] == " " or ((dx, dy, dz) == (0,-1,0) and self.attached)):
                 print("Collision: %s", (xn, yn, zn))
-                return
+                return (self.to_list, self.attached)
             if self.attached:
                 if self.map[xn][zn][yn-1] == " " or (dx, dy, dz) == (0,1,0):
                     self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] #swap block below
                 else:
                     print("Block collision: %s", (xn, yn-1, zn))
-                    return
+                    return (self.to_list, self.attached)
 
             self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y] #swap drone position
             self.drone_pos = (xn, zn, yn)
         else:
             print("Move out of bounds: %s", (xn, yn, zn))
 
-        return
+        return (self.to_list, self.attached)
 
     def release(self):
         if self.attached:
@@ -72,11 +72,11 @@ class Simulator:
                 drop = below.index(" ")
                 self.map[x][z][y-1], self.map[x][z][drop] = self.map[x][z][drop], self.map[x][z][y-1] 
 
-        return
+        return (self.to_list, self.attached)
 
     def speak(string):
         print(string)
-        return
+        return (self.to_list, self.attached)
 
     #internal helper methods
     def find_drone(self):
