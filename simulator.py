@@ -1,6 +1,6 @@
-WIDTH = 11 #x dimension
-LENGTH = 11 #z dimension
-HEIGHT = 5 #y dimension (vertical)
+WIDTH = 101 #x dimension
+LENGTH = 101 #z dimension
+HEIGHT = 51 #y dimension (vertical)
 
 class Simulator:
     def __init__(self, filename):
