@@ -23,7 +23,7 @@ def aStarSearchHelper(parentNode, possibleActionsF, resultingStateFromActionF, g
         return ("failure", float('inf'), astarNodesCnt)
     children = []
     for action in actions:
-	astartNodesCnt = astarNodesCnt + 1
+        astartNodesCnt = astarNodesCnt + 1
         (childState,stepCost) = resultingStateFromActionF(parentNode.state, action)
         h = heuristicF(childState)
         g = parentNode.g + stepCost
