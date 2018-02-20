@@ -10,20 +10,25 @@ def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
 
 def costHeuristicFunc(goal, currentStateList, currentStateMap, maxZ=50):
+    goalPillar = (goal[0], goal[1])
+    goalPillarBlocksList = currentStateMap[goalPillar]
+    if len(goalPillarBlocksList)-1 >= goal[2] and goalPillarBlocksList[goal[2]] == goal[3]:
+        # already goal achieved, return zero cost
+        return 0 
+    
     # find current drone pos
     dronePos = find(lambda item: item[3] == 'drone', currentStateList)
         
     # euclidean dist from drone pos to goal x, goal y, max(goal pillar z) +1 = len(goalPillarList)
-    goalPillar = (goal[0], goal[1])
-    goalPillarBlocksList = currentStateMap[goalPillar]
+    
     goalPillarTopZ = len(goalPillarBlocksList)
     droneDistToGoalPillarTop = euclidean(dronePos, (goal[0], goal[1], goalPillarTopZ))
     
-    #print(droneDistToGoalPillarTop)
+    #print('droneDistToGoalPillarTop=', droneDistToGoalPillarTop)
     #based on goal x, goal y, goal z and current stuff on goal x, goal y - the current pillar at goal x, goal y, 
     #determine how many blocks on goal x, goal y pillar needs move out ? - let's call it cntMoveOuts
     
-    cntMoveOuts = goalPillarTopZ - 1 - goal[2]
+    cntMoveOuts = (goalPillarTopZ - 1 - goal[2]) + 1
     
     # For each moveout, examine each of the other (101*101)-1 pillars on table (minus to exclude goal pillar) and try to 
     # fit as many blocks out of cnt_moveouts from 3.1 above on to these destination pillars. Cost for these moveouts is:
@@ -34,7 +39,7 @@ def costHeuristicFunc(goal, currentStateList, currentStateMap, maxZ=50):
     #      release=1)
     #      move cost is doubled for drone to and fro trips.
 
-    #print(cntMoveOuts)
+    #print('cntMoveOuts=', cntMoveOuts)
     moveOutCost=0
     toBeMovedOut=cntMoveOuts
     for pillar, pillarBlocksList in currentStateMap.items():
@@ -51,10 +56,10 @@ def costHeuristicFunc(goal, currentStateList, currentStateMap, maxZ=50):
                 if toBeMovedOut == 0:
                     break
     # How many blocks we need to move in to goal pillar? let's call it cntMoveIns
-    #print(moveOutCost)
+    #print('moveOutCost=', moveOutCost)
     
-    cntMoveIns = goal[2] - (goalPillarTopZ-1-cntMoveOuts) + 1
-    #print(cntMoveIns)  
+    cntMoveIns = (goal[2] + 1) - (goalPillarTopZ-cntMoveOuts)
+    #print('cntMoveIns=', cntMoveIns)  
     #For each move in, examine each of the other (101*101)-1 pillars on table (minus to exclude goal pillar) and try to 
     # accumulate as many blocks out of cnt_moveins from 3.3 above from these source pillars. Cost for these moveins is:
     #     moveinscost= Sum of all such
@@ -78,7 +83,7 @@ def costHeuristicFunc(goal, currentStateList, currentStateMap, maxZ=50):
                 cntMoveIns = cntMoveIns-1
                 if cntMoveIns == 0:
                     break
-    #print(moveInCost)                
+    #print('moveInCost=', moveInCost)                
     return droneDistToGoalPillarTop + moveOutCost + moveInCost
 
 # test
@@ -109,4 +114,6 @@ for pillarcoordinate, pillar in currentStateMap.items():
 goal = (0,0,1,'green')
 
 print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateList, currentStateMap, maxZ=2)))
-    
+
+goal = (0,0,1,'yellow')
+print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateList, currentStateMap, maxZ=2)))    
