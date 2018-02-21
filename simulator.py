@@ -2,6 +2,14 @@ WIDTH = 101 #x dimension
 LENGTH = 101 #z dimension
 HEIGHT = 51 #y dimension (vertical)
 
+def goalTestF(state, goal):
+    x, y, z, color = goal
+    if state[0][x][y][z] == color:
+        return True
+    else:
+        return False
+
+
 class Simulator:
     def __init__(self, filename):
         self.initialize(filename)
