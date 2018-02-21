@@ -89,7 +89,9 @@ class Simulator:
             if self.attached:
                 if self.map[xn][zn][yn-1] == " " or (dx, dy, dz) == (0,1,0):
                     # update currentStateMap first before block swap
-                    self.currentStateMap[(x,z)].insert(y-1, self.map[xn][zn][yn-1]) 
+                    del self.currentStateMap[(x,z)][y-1]
+                    if (xn,zn) not in self.currentStateMap:
+                        self.currentStateMap[(xn,zn)]=[]   
                     self.currentStateMap[(xn,zn)].insert(yn-1, self.map[x][z][y-1]) 
                     
                     #swap block below                    
@@ -99,7 +101,7 @@ class Simulator:
                     return (self.to_list, self.attached)
 
             # update currentStateMap first before drone pos swap
-            self.currentStateMap[(x,z)].insert(y, self.map[xn][zn][yn]) 
+            del self.currentStateMap[(x,z)][y]
             if (xn,zn) not in self.currentStateMap:
                 self.currentStateMap[(xn,zn)]=[] 
             self.currentStateMap[(xn,zn)].insert(yn, self.map[x][z][y]) 
