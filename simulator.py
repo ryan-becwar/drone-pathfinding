@@ -36,7 +36,6 @@ class Simulator:
                 map[x][z][y] = item
                 if (int(data[0]), int(data[1])) not in currentStateMap:
                     currentStateMap[(int(data[0]), int(data[1]))] = []
-                    #self.currentStateMap[(int(data[0]), int(data[1]))].insert(int(data[2]), data[3])
                 currentStateMap[(int(data[0]), int(data[1]))].insert(int(data[2]), data[3]) 
         return (map, currentStateMap)
 
@@ -92,6 +91,8 @@ class Simulator:
 
             # update currentStateMap first before drone pos swap
             self.currentStateMap[(x,z)].insert(y, self.map[xn][zn][yn]) 
+            if (xn,zn) not in self.currentStateMap:
+                self.currentStateMap[(xn,zn)]=[] 
             self.currentStateMap[(xn,zn)].insert(yn, self.map[x][z][y]) 
 
             #swap drone position
