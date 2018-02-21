@@ -1,4 +1,9 @@
-from ../simulator import *
+import os,sys,inspect
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir) 
+
+from simulator import *
 goal = (3,3,0,'red')
 
 
@@ -45,6 +50,43 @@ def aStarSearchHelper(parentNode, possibleActionsF, resultingStateFromActionF, g
         # expand best child, reassign its f value to be returned value
         result,bestChild.f = aStarSearchHelper(bestChild, possibleActionsF, resultingStateFromActionF, goalTestF,
                                             heuristicF, min(fmax,alternativef))
+        if result is not "failure":               
+            result.insert(0,parentNode.state)     
+            return (result, bestChild.f, astarNodesCnt) 
+
+
+def aStarSearchRefactor(startState, heuristicF):
+    h = heuristicF(goal, startState.currentStateMap)
+    startNode = Node(state=startState, f=0+h, g=0, h=h)
+    return aStarSearchHelper(startNode, heuristicF, float('inf'))
+
+def aStarSearchHelperRefactor(parentNode, heuristicF, fmax):
+    astarNodesCnt = 0
+    if parentNode.state.goalTest(goal):
+        return ([parentNode.state], parentNode.g)
+    ## Construct list of children nodes with f, g, and h values
+    actions = parentNode.state.possibleActions()
+    if not actions:
+        return ("failure", float('inf'), astarNodesCnt)
+    children = []
+    for action in actions:
+        astartNodesCnt = astarNodesCnt + 1
+        (childState,stepCost) = parentNode.state.resultingStateFromActionF(parentNode.state, action)
+        h = heuristicF(goal, childState[2])
+        g = parentNode.g + stepCost
+        f = max(h+g, parentNode.f)
+        childNode = Node(state=childState, f=f, g=g, h=h)
+        children.append(childNode)
+    while True:
+        # find best child
+        children.sort(key = lambda n: n.f) # sort by f value
+        bestChild = children[0]
+        if bestChild.f > fmax or bestChild.f == float('inf'):
+            return ("failure",bestChild.f, astarNodesCnt)
+        # next lowest f value
+        alternativef = children[1].f if len(children) > 1 else float('inf')
+        # expand best child, reassign its f value to be returned value
+        result,bestChild.f = aStarSearchHelper(bestChild, heuristicF, min(fmax,alternativef))
         if result is not "failure":               
             result.insert(0,parentNode.state)     
             return (result, bestChild.f, astarNodesCnt) 
