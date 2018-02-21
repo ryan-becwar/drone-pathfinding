@@ -20,6 +20,7 @@ def costHeuristicFunc(goal, currentStateMap, maxY=51):
     # dronePos = find(lambda item: item[3] == 'd', currentStateList)
     
     # to be removed once we have refactored the algos to extract dronePos from current simulator.dronePos
+    dronePos = (-1,-1,-1)
     for pillar, pillarBlocksList in currentStateMap.items():
         if 'd' in pillarBlocksList:
             dronePos = (pillar[0], pillar[1], pillarBlocksList.index('d'))
@@ -99,11 +100,11 @@ dwElementBlock2=(0, 1, 0, 'yellow')
 dwElementBlock3=(0, 0, -1, 'blue')
 dwElementBlock4=(-1, 0, -1, 'green')
 dwElementBlock5=(-1, 0, 0, 'yellow')
-dwElementDrone =(0, 1, -1, 'drone')
+dwElementDrone =(0, 1, -1, 'd')
 currentStateList = [dwElementBlock1, dwElementBlock2, dwElementBlock3, dwElementBlock4, dwElementBlock5, dwElementDrone]
 currentStateMap ={}
 currentStateMap[(0,0)]=['red', 'yellow']
-currentStateMap[(0,-1)]=['blue', 'drone']
+currentStateMap[(0,-1)]=['blue', 'd']
 currentStateMap[(-1,-1)]=['green']
 currentStateMap[(-1,0)]=['yellow']
 
@@ -120,7 +121,7 @@ for pillarcoordinate, pillar in currentStateMap.items():
 dronePos =(0, -1, 1)
 goal = (0,1,0,'green')
 
-print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(dronePos, goal, currentStateMap, maxY=2)))
+print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateMap, maxY=2)))
 
 goal = (0,1,0,'yellow')
-print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(dronePos, goal, currentStateMap, maxY=2)))
+print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateMap, maxY=2)))
