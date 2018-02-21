@@ -3,8 +3,8 @@ LENGTH = 101 #z dimension
 HEIGHT = 51 #y dimension (vertical)
 
 def goalTestF(state, goal):
-    x, y, z, color = goal
-    if state[0][x][y][z] == color:
+    x, z, y, color = goal
+    if state[0][x][z][y] == color:
         return True
     else:
         return False
@@ -62,7 +62,7 @@ class Simulator:
         if 0 <= xn < WIDTH and 0 <= zn < LENGTH and 0 <= yn < HEIGHT and (not self.attached or 0 <= (yn-1)): #drone inbounds
             if not (self.map[xn][zn][yn] == " " or ((dx, dy, dz) == (0,-1,0) and self.attached)):
                 print("Collision: %s", (xn, yn, zn))
-                return
+                return (self.to_list, self.attached)
 
             if self.attached:
                 if self.map[xn][zn][yn-1] == " " or (dx, dy, dz) == (0,1,0):
@@ -99,6 +99,20 @@ class Simulator:
         print(string)
        
         return
+
+    def take_action(self, action):
+        dx, dy, dz, type = action
+
+        if type == "move":
+            return self.move(dx, dy, dz)
+        elif type == "attach":
+            return self.attach()
+        elif type == "release":
+            return self.release()
+        else:
+            print("Invalid move: ", move)
+            return
+
 
     #internal helper methods
     def find_drone(self):
