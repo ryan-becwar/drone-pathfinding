@@ -1,6 +1,6 @@
-WIDTH = 101 #x dimension
-LENGTH = 101 #z dimension
-HEIGHT = 51 #y dimension (vertical)
+WIDTH = 11 #x dimension
+LENGTH = 11 #z dimension
+HEIGHT = 5 #y dimension (vertical)
 
 def goalTestF(state, goal):
     x, z, y, color = goal
@@ -11,26 +11,34 @@ def goalTestF(state, goal):
 
 
 class Simulator:
-    def __init__(self, filename):
-        self.initialize(filename)
-        self.attached = False
+    def __init__(self, state):
+        self.map = state[0]
+        self.attached = state[1]
+        self.currentStateMap = state[2]
         self.drone_pos = self.find_drone()
+
+    @classmethod
+    def from_file(cls, filename):
+        map, stateMap = cls.initialize(filename)
+        obj = cls((map, False, stateMap))
+        return obj
 
     
     #TODO: check if configuration is valid, no floating blocks
-    def initialize(self, filename):
-        self.map = [[[" " for y in range(HEIGHT)] for z in range(LENGTH)] for x in range(WIDTH)]
-        self.currentStateMap = {}
+    def initialize(filename):
+        map = [[[" " for y in range(HEIGHT)] for z in range(LENGTH)] for x in range(WIDTH)]
+        currentStateMap = {}
         
         with open(filename, 'r') as file_in:
             for line in file_in.readlines():
                 data = line.split()
                 x, z, y, item = (int(data[0]), int(data[1]), int(data[2]), data[3])
-                self.map[x][z][y] = item
-                if (int(data[0]), int(data[1])) not in self.currentStateMap:
-                    self.currentStateMap[(int(data[0]), int(data[1]))] = []
+                map[x][z][y] = item
+                if (int(data[0]), int(data[1])) not in currentStateMap:
+                    currentStateMap[(int(data[0]), int(data[1]))] = []
                     #self.currentStateMap[(int(data[0]), int(data[1]))].insert(int(data[2]), data[3])
-                self.currentStateMap[(int(data[0]), int(data[1]))].insert(int(data[2]), data[3]) 
+                currentStateMap[(int(data[0]), int(data[1]))].insert(int(data[2]), data[3]) 
+        return (map, currentStateMap)
 
 
     def writeout(self, filename):

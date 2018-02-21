@@ -3,7 +3,7 @@ import tools.plot as p
 import algos.recursiveBestFirstAstar as a
 import algos.IDS as ids
 
-sim = s.Simulator("gamestates/simple")
+sim = s.Simulator.from_file("gamestates/simple")
 locations = sim.to_list()
 dimensions = (s.WIDTH, s.LENGTH, s.HEIGHT)
 p.plotBoard(locations, dimensions)
