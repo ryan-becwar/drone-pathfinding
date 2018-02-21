@@ -79,7 +79,7 @@ class Simulator:
         x, z, y = self.drone_pos
         self.attached = False
 
-       below = self.map[x][z][:y-1] #list of all blocks two below drone
+        below = self.map[x][z][:y-1] #list of all blocks two below drone
             
         if " " in below:
             drop = below.index(" ")
