@@ -101,13 +101,13 @@ def costHeuristicFunc(goal, currentStateMap, maxY=51):
     return droneDistToGoalPillarTop + moveOutCost + moveInCost
 
 # test
-
 dwElementBlock1=(0, 0, 0, 'red')
-dwElementBlock2=(0, 1, 0, 'yellow')
-dwElementBlock3=(0, 0, -1, 'blue')
-dwElementBlock4=(-1, 0, -1, 'green')
+dwElementBlock2=(0, 0, 1, 'yellow')
+dwElementBlock3=(0, -1, 0, 'blue')
+dwElementBlock4=(-1, -1, 0, 'green')
 dwElementBlock5=(-1, 0, 0, 'yellow')
-dwElementDrone =(0, 1, -1, 'd')
+dwElementDrone =(0, -1, 0, 'd')
+
 currentStateList = [dwElementBlock1, dwElementBlock2, dwElementBlock3, dwElementBlock4, dwElementBlock5, dwElementDrone]
 currentStateMap ={}
 currentStateMap[(0,0)]=['red', 'yellow']
