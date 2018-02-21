@@ -9,7 +9,7 @@ def find(f, currentStateList):
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
 
-def costHeuristicFunc(goal, currentStateList, currentStateMap, maxY=51):
+def costHeuristicFunc(dronePos, goal, currentStateList, currentStateMap, maxY=51):
     goalPillar = (goal[0], goal[2])
     goalPillarBlocksList = currentStateMap[goalPillar]
     if len(goalPillarBlocksList)-1 >= goal[1] and goalPillarBlocksList[goal[1]] == goal[3]:
@@ -17,12 +17,12 @@ def costHeuristicFunc(goal, currentStateList, currentStateMap, maxY=51):
         return 0 
     
     # find current drone pos
-    dronePos = find(lambda item: item[3] == 'drone', currentStateList)
+    # dronePos = find(lambda item: item[3] == 'd', currentStateList)
         
     # euclidean dist from drone pos to goal x, goal z, max(goal pillar y) +1 = len(goalPillarList)
     
     goalPillarTopY = len(goalPillarBlocksList)
-    droneDistToGoalPillarTop = euclidean(dronePos, (goal[0], goalPillarTopY, goal[2]))
+    droneDistToGoalPillarTop = euclidean(dronePos, (goal[0], goal[2], goalPillarTopY))
     
     #print('droneDistToGoalPillarTop=', droneDistToGoalPillarTop)
     #based on goal x, goal y, goal z and current stuff on goal x, goal z - the current pillar at goal x, goal z, 
@@ -110,10 +110,11 @@ for stateElement in currentStateList:
 for pillarcoordinate, pillar in currentStateMap.items():
     print(pillarcoordinate)
     print(pillar)
-    
+
+dronePos =(0, -1, 1)
 goal = (0,1,0,'green')
 
-print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateList, currentStateMap, maxY=2)))
+print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(dronePos, goal, currentStateList, currentStateMap, maxY=2)))
 
 goal = (0,1,0,'yellow')
-print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateList, currentStateMap, maxY=2)))
+print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(dronePos, goal, currentStateList, currentStateMap, maxY=2)))
