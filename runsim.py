@@ -23,6 +23,3 @@ print()
 result = a.aStarSearchRefactor(sim, costHeuristicFunc)
 print()
 print(result)
-
-
-
