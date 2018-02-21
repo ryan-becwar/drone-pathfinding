@@ -20,19 +20,25 @@ class Simulator:
     #TODO: check if configuration is valid, no floating blocks
     def initialize(self, filename):
         self.map = [[[" " for y in range(HEIGHT)] for z in range(LENGTH)] for x in range(WIDTH)]
+        self.currentStateMap = {}
         
         with open(filename, 'r') as file_in:
             for line in file_in.readlines():
                 data = line.split()
                 x, z, y, item = (int(data[0]), int(data[1]), int(data[2]), data[3])
                 self.map[x][z][y] = item
+                if (int(data[0]), int(data[1])) not in self.currentStateMap:
+                    self.currentStateMap[(int(data[0]), int(data[1]))] = []
+                    #self.currentStateMap[(int(data[0]), int(data[1]))].insert(int(data[2]), data[3])
+                self.currentStateMap[(int(data[0]), int(data[1]))].insert(int(data[2]), data[3]) 
+
 
     def writeout(self, filename):
         with open(filename, 'w') as out:
             out.writelines(['{0} {1} {2} {3}\n'.format(item[0], item[1], item[2], item[3]) for item in self.to_list()])
 
     def state(self):
-        return (self.map, self.attached)
+         return (self.map, self.attached, self.currentStateMap)
 
     def attach(self):
         if self.attached:
