@@ -2,23 +2,6 @@ WIDTH = 11 #x dimension
 LENGTH = 11 #z dimension
 HEIGHT = 5 #y dimension (vertical)
 
-def goalTest(state, goal):
-    x, z, y, color = goal
-    if state[0][x][z][y] == color:
-        return True
-    else:
-        return False
-
-def resultingStateFromAction(state, action):
-   sim = Simulator(state) 
-   sim.take_action(action)
-   return sim.state()
-
-def possibleActions(state):
-    sim = Simulator(state)
-    return sim.possible_commands()
-
-
 class Simulator:
     def __init__(self, state):
         self.map = state[0]
@@ -153,6 +136,21 @@ class Simulator:
             print("Invalid move: ", move)
             return
 
+    #Algorithm interaction methods
+    def goalTest(self, goal):
+        x, z, y, color = goal
+        if self.map[x][z][y] == color:
+            return True
+        else:
+            return False
+
+    def resultingStateFromAction(self, action):
+       temp_sim = Simulator(self.state()) 
+       temp_sim.take_action(action)
+       return (temp_sim.state(), 1.0) #TODO: Update cost to vary with action
+
+    def possibleActions(self):
+        return self.possible_commands()
 
     #internal helper methods
     def find_drone(self):

@@ -19,7 +19,8 @@ print()
 
 
 
-result = a.aStarSearch(sim.state(), possibleActions, resultingStateFromAction, goalTest, costHeuristicFunc)
+#result = a.aStarSearch(sim.state(), possibleActions, resultingStateFromAction, goalTest, costHeuristicFunc)
+result = a.aStarSearchRefactor(sim, costHeuristicFunc)
 print()
 print(result)
 
