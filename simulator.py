@@ -2,12 +2,21 @@ WIDTH = 11 #x dimension
 LENGTH = 11 #z dimension
 HEIGHT = 5 #y dimension (vertical)
 
-def goalTestF(state, goal):
+def goalTest(state, goal):
     x, z, y, color = goal
     if state[0][x][z][y] == color:
         return True
     else:
         return False
+
+def resultingStateFromAction(state, action):
+   sim = Simulator(state) 
+   sim.take_action(action)
+   return sim.state()
+
+def possibleActions(state):
+    sim = Simulator(state)
+    return sim.possible_commands()
 
 
 class Simulator:
@@ -167,7 +176,7 @@ class Simulator:
             for dz in [-1, 0, 1]:
                 for dy in [-1, 0, 1]:                                        
                     if (dx, dy, dz) == (0, 0, 0): # if no movement in drone, consider possible actions
-                        actions.append((dx, dy, dz, "")) # do nothing
+                        #actions.append((dx, dy, dz, "")) # do nothing
 
                         if self.attached:
                             actions.append((dx, dy, dz, "release"))
