@@ -9,7 +9,7 @@ def testAlgorithm(algo):
         
         start_time = time.time()
         result = algo(sim)
-        elapsed = time.time()
+        elapsed = time.time() - start_time
         
         print("\nStage: ", case)
         print("Elapsed Time: ", elapsed)
