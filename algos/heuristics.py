@@ -9,7 +9,7 @@ def find(f, currentStateList):
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
 
-def costHeuristicFunc(dronePos, goal, currentStateList, currentStateMap, maxY=51):
+def costHeuristicFunc(dronePos, goal, currentStateMap, maxY=51):
     goalPillar = (goal[0], goal[2])
     goalPillarBlocksList = currentStateMap[goalPillar]
     if len(goalPillarBlocksList)-1 >= goal[1] and goalPillarBlocksList[goal[1]] == goal[3]:
@@ -114,7 +114,7 @@ for pillarcoordinate, pillar in currentStateMap.items():
 dronePos =(0, -1, 1)
 goal = (0,1,0,'green')
 
-print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(dronePos, goal, currentStateList, currentStateMap, maxY=2)))
+print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(dronePos, goal, currentStateMap, maxY=2)))
 
 goal = (0,1,0,'yellow')
-print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(dronePos, goal, currentStateList, currentStateMap, maxY=2)))
+print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(dronePos, goal, currentStateMap, maxY=2)))

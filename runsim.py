@@ -8,18 +8,18 @@ def testF(possible_commandsF):
 
 sim = Simulator.from_file("gamestates/simple")
 
-actions = sim.possible_commands()
-print(actions)
+print(sim.state())
 print()
-after = resultingStateFromAction(sim.state(), actions[0])
-print(after)
+#after = resultingStateFromAction(sim.state(), actions[0])
+#print(after)
 
-print()
-print(testF(sim.possible_commands))
+#sim.move(-1,0,0)
+
+#print(sim.state())
+
 
 
 result = a.aStarSearch(sim.state(), possibleActions, resultingStateFromAction, goalTest, costHeuristicFunc)
-
 print()
 print(result)
 
