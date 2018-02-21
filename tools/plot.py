@@ -13,13 +13,13 @@ def plotBoard(locations, dimensions):
     ax.set_ylabel('Z', fontsize=15)
     ax.set_zlabel('Y', fontsize=15)
 
-    ax.set_xlim([0, dimensions[0]])
-    ax.set_ylim([0, dimensions[1]])
-    ax.set_zlim([0, dimensions[2]])
+    ax.set_xlim([0-((dimensions[0]-1)/2), ((dimensions[0]-1)/2)])
+    ax.set_ylim([0-((dimensions[1]-1)/2), ((dimensions[1]-1)/2)])
+    ax.set_zlim([0, (dimensions[2]-1)])
 
-    ax.xaxis.set_major_locator(ticker.MultipleLocator(1))
-    ax.yaxis.set_major_locator(ticker.MultipleLocator(1))
-    ax.zaxis.set_major_locator(ticker.MultipleLocator(1))
+    ax.xaxis.set_major_locator(ticker.MultipleLocator(5))
+    ax.yaxis.set_major_locator(ticker.MultipleLocator(5))
+    ax.zaxis.set_major_locator(ticker.MultipleLocator(5))
 
     plt.title('Drone World', fontsize=20)
     plt.show()
