@@ -89,12 +89,23 @@ class Simulator:
 
             if self.attached:
                 if self.map[xn][zn][yn-1] == " " or (dx, dy, dz) == (0,1,0):
-                    self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] #swap block below
+                    # update currentStateMap first before block swap
+                    self.currentStateMap[(x,z)].insert(y-1, self.map[xn][zn][yn-1]) 
+                    self.currentStateMap[(xn,zn)].insert(yn-1, self.map[x][z][y-1]) 
+                    
+                    #swap block below                    
+                    self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] 
                 else:
                     print("Block collision: %s", (xn, yn-1, zn))
                     return (self.to_list, self.attached)
 
-            self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y] #swap drone position
+            # update currentStateMap first before drone pos swap
+            self.currentStateMap[(x,z)].insert(y, self.map[xn][zn][yn]) 
+            self.currentStateMap[(xn,zn)].insert(yn, self.map[x][z][y]) 
+
+            #swap drone position
+            self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y]
+
             self.drone_pos = (xn, zn, yn)
             
         else:
@@ -114,6 +125,9 @@ class Simulator:
             
         if " " in below:
             drop = below.index(" ")
+            # update currentStateMap first before swap due to release
+            self.currentStateMap[(x,z)].insert(drop, self.map[x][z][y-1])
+
             self.map[x][z][y-1], self.map[x][z][drop] = self.map[x][z][drop], self.map[x][z][y-1] 
         
         return
