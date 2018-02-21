@@ -2,6 +2,14 @@ WIDTH = 101 #x dimension
 LENGTH = 101 #z dimension
 HEIGHT = 51 #y dimension (vertical)
 
+def goalTestF(state, goal):
+    x, y, z, color = goal
+    if state[0][x][y][z] == color:
+        return True
+    else:
+        return False
+
+
 class Simulator:
     def __init__(self, filename):
         self.initialize(filename)
@@ -24,7 +32,7 @@ class Simulator:
             out.writelines(['{0} {1} {2} {3}\n'.format(item[0], item[1], item[2], item[3]) for item in self.to_list()])
 
     def state(self):
-        return self.map
+        return (self.map, self.attached)
 
     def attach(self):
         if self.attached:
@@ -41,12 +49,12 @@ class Simulator:
         else:
             print("Drone is on floor")
 
-        return
+        return (self.to_list, self.attached)
 
     def move(self, dx, dy, dz):
         if abs(dx) > 1 or abs(dy) > 1 or abs(dz) > 1:
             print("Invalid move magnitude: %s", (dx, dy, dz))
-            return
+            return (self.to_list, self.attached)
         
         x, z, y = self.drone_pos
         xn, zn, yn = x+dx, z+dz, y+dy
@@ -61,7 +69,7 @@ class Simulator:
                     self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] #swap block below
                 else:
                     print("Block collision: %s", (xn, yn-1, zn))
-                    return
+                    return (self.to_list, self.attached)
 
             self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y] #swap drone position
             self.drone_pos = (xn, zn, yn)
@@ -69,7 +77,7 @@ class Simulator:
         else:
             print("Move out of bounds: %s", (xn, yn, zn))
 
-        return
+        return (self.to_list, self.attached)
 
     def release(self):
         if not self.attached:
@@ -89,7 +97,7 @@ class Simulator:
 
     def speak(self, string):
         print(string)
-        
+       
         return
 
     #internal helper methods
