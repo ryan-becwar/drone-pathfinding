@@ -10,8 +10,8 @@ def gen_file(filename, numBlocks=500000, maxBlocksPerColumn=50, blockColors=['re
     while True:
         if cntBlocksOnTable == numBlocks:
             break
-        randomColumnX = random.randint(-50,50)
-        randomColumnZ = random.randint(-50,50)
+        randomColumnX = random.randint(0,101)
+        randomColumnZ = random.randint(0,101)
         randomNumBlocksOnThisColumn = random.randint(0,maxBlocksPerColumn)
         if randomNumBlocksOnThisColumn > 0:
             if (randomColumnX, randomColumnZ) not in stateMap:
