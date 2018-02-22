@@ -17,6 +17,7 @@ print()
 
 goal = (3,3,0,'red')
 result = sa.simulatedAnneal(sim, costHeuristicFunc, goal)
+#result = sa.simulatedMoreAnnealAtSameT(sim, costHeuristicFunc, goal)
 print()
 print(result)
 
