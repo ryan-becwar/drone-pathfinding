@@ -187,15 +187,15 @@ currentStateMap[(0,-1)]=['blue', 'd']
 currentStateMap[(-1,-1)]=['green']
 currentStateMap[(-1,0)]=['yellow']
 
-print(currentStateList)
+#print(currentStateList)
 
-for stateElement in currentStateList:
-    print(stateElement)
-    print(stateElement[3])
+#for stateElement in currentStateList:
+#    print(stateElement)
+#    print(stateElement[3])
 
-for pillarcoordinate, pillar in currentStateMap.items():
-    print(pillarcoordinate)
-    print(pillar)
+#for pillarcoordinate, pillar in currentStateMap.items():
+#    print(pillarcoordinate)
+#    print(pillar)
     
 goal = (0,0,1,'green')
 
