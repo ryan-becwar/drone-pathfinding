@@ -1,6 +1,6 @@
-WIDTH = 11 #x dimension
-LENGTH = 11 #z dimension
-HEIGHT = 5 #y dimension (vertical)
+WIDTH = 101 #x dimension
+LENGTH = 101 #z dimension
+HEIGHT = 51 #y dimension (vertical)
 
 class Simulator:
     def __init__(self, state):
@@ -133,7 +133,7 @@ class Simulator:
         elif type == "release":
             return self.release()
         else:
-            print("Invalid move: ", move)
+            print("Invalid move: ", action)
             return
 
     #Algorithm interaction methods

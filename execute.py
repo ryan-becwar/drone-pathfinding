@@ -1,9 +1,11 @@
 import simulator as s
+import tools.generator as g
 import tools.plot as p
 import algos.recursiveBestFirstAstar as a
 import algos.IDS as ids
 
-sim = s.Simulator.from_file("gamestates/simple")
+#g.gen_file("gamestates/world100", 100)
+sim = s.Simulator.from_file("gamestates/world100")
 locations = sim.to_list()
 dimensions = (s.WIDTH, s.LENGTH, s.HEIGHT)
 p.plotBoard(locations, dimensions)
