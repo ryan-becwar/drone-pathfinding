@@ -163,17 +163,22 @@ class Simulator:
 
         return (-1,-1,-1)
 
+    def space_empty(self, x, z, y):
+        return self.map[x][z][y] == " " or self.map[x][z][y] == "d"
+    def space_taken(self, x, z, y):
+        return y == -1 or (self.map[x][z][y] != " " and self.map[x][z][y] != "d")
+
     #returns the state as a list of objects
     def to_list(self):
         return([(x, z, y, self.map[x][z][y]) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if self.map[x][z][y] != " "])
 
     #returns the list of top-level blocks on the map
     def top_level_blocks(self):
-        return [(x, z, y, self.map[x][z][y]) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if self.map[x][z][y] != " " and self.map[x][z][y+1] == " "]
+        return [(x, z, y, self.map[x][z][y]) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if self.space_taken(x, z, y) and self.space_empty(x, z, y + 1)]
 
-    #return a list of positions on the map that a block could be placed, ignoring the position that block is already
+    return a list of positions on the map that a block could be placed, ignoring the position that block is already
     def top_level_positions(self, ignore):
-        return [(x, z, y) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if (x, z) != ignore and self.map[x][z][y] == " " and (y == 0 or self.map[x][z][y-1] != " ")]
+        return [(x, z, y) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if (x, z) != ignore and self.space_empty(x, z, y) and self.space_taken(x, z, y - 1)]
 
     def possible_block_moves(self):
         actions = []
