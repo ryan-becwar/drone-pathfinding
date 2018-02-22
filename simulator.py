@@ -113,7 +113,8 @@ class Simulator:
         if " " in below:
             drop = below.index(" ")
             # update currentStateMap first before swap due to release
-            self.currentStateMap[(x,z)].insert(drop, self.map[x][z][y-1])
+            self.currentStateMap[(x,z)][drop] = self.map[x][z][y-1]
+            self.currentStateMap[(x,z)][y-1] = ' '
 
             self.map[x][z][y-1], self.map[x][z][drop] = self.map[x][z][drop], self.map[x][z][y-1] 
         
@@ -176,7 +177,7 @@ class Simulator:
     def top_level_blocks(self):
         return [(x, z, y, self.map[x][z][y]) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if self.space_taken(x, z, y) and self.space_empty(x, z, y + 1)]
 
-    return a list of positions on the map that a block could be placed, ignoring the position that block is already
+    #return a list of positions on the map that a block could be placed, ignoring the position that block is already
     def top_level_positions(self, ignore):
         return [(x, z, y) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if (x, z) != ignore and self.space_empty(x, z, y) and self.space_taken(x, z, y - 1)]
 

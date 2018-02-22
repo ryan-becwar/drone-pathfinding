@@ -18,7 +18,7 @@ print()
 #print(sim.state())
 
 #result = a.aStarSearch(sim.state(), possibleActions, resultingStateFromAction, goalTest, costHeuristicFunc)
-goal = (3,3,1,'red')
+goal = (3,3,0,'red')
 result = a.aStarSearch(sim, costHeuristicFunc, goal)
 print()
 print(result)
