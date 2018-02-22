@@ -5,11 +5,12 @@ import algos.recursiveBestFirstAstar as a
 import algos.IDS as ids
 
 #g.gen_file("gamestates/world100", 100)
-sim = s.Simulator.from_file("gamestates/world100")
+sim = s.Simulator.from_file("gamestates/pillar")
 locations = sim.to_list()
 dimensions = (s.WIDTH, s.LENGTH, s.HEIGHT)
-p.plotBoard(locations, dimensions)
+#p.plotBoard(locations, dimensions)
 
+print(sim.possible_block_moves())
 
 depthLimit = 10
 ids.depthLimitedSearch(startState, goalState, possibleActionsF, resultingStateFromActionF, depthLimit)
