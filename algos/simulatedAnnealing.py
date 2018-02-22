@@ -4,31 +4,61 @@ import numpy as np
 def pickRandomAction(actions):
     return random.choice(actions)
 
-def simulatedAnneal(startState, possibleActionsF, stateFromActionAppliedF, heuristicF, goalTestF, TdecayFactor=0.99):
-    
+
+def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.99):
+
     result =[]
-    currentState = startState  
-    currentStateCost = heuristicF(currentState)
+    currentState = startState
+    currentStateCost = heuristicF(goal, currentState.currentStateMap, currentState.drone_pos)
     T = 1.0
-    
+
     nodesExplored = 0
-    while true: 
+    while True:
         result.append(currentState)
-        if goalTestF(currentState):
+        if currentState.goalTest(goal):
             return (result, nodesExplored)
-        possibleActions = possibleActionsF(currentState)
+        possibleActions = currentState.possibleActions()
         action = pickRandomAction(possibleActions)
-        
-        nextState = stateFromActionAppliedF(currentState, action)            
-        nextStateCost = heuristicF(nextState)
+
+        nextState = currentState.resultingStateFromAction(action)[0]
+        nextStateCost = heuristicF(goal, nextState.currentStateMap, nextState.drone_pos)
         dE = nextStateCost - currentStateCost
-        
+
         probabilityOfAcceptingRandomAction = np.exp(dE/T)
-        
-        if dE < 0 or probabilityOfAcceptingRandomAction > random():
+
+        if dE < 0 or probabilityOfAcceptingRandomAction > random.random():
             nodesExplored = nodesExplored + 1
-            currentState = newState
-            currentStatecost = newStateCost
+            currentState = nextState
+            currentStatecost = nextStateCost
+
+        T = T*TdecayFactor
+
+
+def simulatedMoreAnnealAtSameT(startState, heuristicF, goal, TdecayFactor=0.99, numAnnealAtSameT=100):
+
+    result =[]
+    currentState = startState
+    currentStateCost = heuristicF(goal, currentState.currentStateMap, currentState.drone_pos)
+    T = 1.0
+
+    nodesExplored = 0
+    while True:
+        result.append(currentState)
+        if currentState.goalTest(goal):
+            return (result, nodesExplored)
+        possibleActions = currentState.possibleActions()
+        action = pickRandomAction(possibleActions)
+
+        nextState = currentState.resultingStateFromAction(action)[0]
+        nextStateCost = heuristicF(goal, nextState.currentStateMap, nextState.drone_pos)
+        dE = nextStateCost - currentStateCost
+
+        probabilityOfAcceptingRandomAction = np.exp(dE/T)
+
+        if dE < 0 or probabilityOfAcceptingRandomAction > random.random():
+            nodesExplored = nodesExplored + 1
+            currentState = nextState
+            currentStatecost = nextStateCost
 
         T = T*TdecayFactor
     
