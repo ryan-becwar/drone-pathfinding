@@ -16,6 +16,15 @@ class Simulator:
         obj = cls((map, False, stateMap))
         return obj
 
+    def __hash__(self):
+        return hash((str(self.map), self.attached))
+
+    def __eq__(self, other):
+        return (str(self.map), self.attached) == (str(other.map), other.attached)
+
+    def __ne__(self,other):
+        return not(self == other)
+
     
     #TODO: check if configuration is valid, no floating blocks
     def initialize(filename):

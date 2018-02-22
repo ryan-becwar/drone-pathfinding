@@ -7,54 +7,64 @@ from simulator import *
 #goal = (3,3,0,'red')
 
 
-class Node:
-    def __init__(self, state, f=0, g=0 ,h=0):
-        self.state = state
-        self.f = f
-        self.g = g
-        self.h = h
-    def __repr__(self):
-        return "Node(" + repr(self.state) + ", f=" + repr(self.f) + \
-               ", g=" + repr(self.g) + ", h=" + repr(self.h) + ")"
+#class Node:
+#    def __init__(self, state, f=0, g=0 ,h=0):
+#        self.state = state
+#        self.f = f
+#        self.g = g
+#        self.h = h
+#    def __repr__(self):
+#        return "Node(" + repr(self.state) + ", f=" + repr(self.f) + \
+#               ", g=" + repr(self.g) + ", h=" + repr(self.h) + ")"
 
 def aStar(start, goal, heuristicF):
     closed = set()
-    open = set([start])
+    open = set([start.__hash__()])
 
+    hashdict = {}
+    hashdict[start.__hash__()] = start
     cameFrom = {}
     gscore = {}
-    gscore[start] = 0
+    gscore[start.__hash__()] = 0
     fscore = {}
-    fscore[start] = heristicF(goal, start.currentStateMap, start.drone_pos)
+    #fscore[start] = heuristicF(goal, start.currentStateMap, start.drone_pos)
+    fscore[start.__hash__()] = heuristicF(goal, start)
 
     while open:
         #current is the node with the smallest fscore
-        current = min(fscore, key=fscore.get)
+        current = hashdict[min(open, key=fscore.get)]
+        currentHash = current.__hash__()
+        print(current.currentStateMap)
         if current.goalTest(goal):
-            return reconstruct_path(cameFrom, current)
+            #return reconstruct_path(cameFrom, currentHash)
+            hashpath = reconstruct_path(cameFrom, currentHash)
+            return [hashdict[x] for x in hashpath]
 
-        open.remove(current)
-        closed.add(current)
+        open.remove(currentHash)
+        closed.add(currentHash)
 
         for action in current.possibleActions():
             nextState, nextCost = current.resultingStateFromAction(action)
-            if nextState in closed:
+            nextHash = nextState.__hash__()
+            hashdict[nextHash] = nextState
+            if nextHash in closed:
                 continue
 
-            if nextState not in open:
-                open.add(nextState)
-                gscore[nextState] = float("inf")
-                fscore[nextState] = float("inf")
+            if nextHash not in open:
+                open.add(nextHash)
+                gscore[nextHash] = float("inf")
+                fscore[nextHash] = float("inf")
 
-            tentative_gscore = gscore[current] + nextCost
-            if tentative_gscore >= gscore[neighbor]:
+            tentative_gscore = gscore[currentHash] + nextCost
+            if tentative_gscore >= gscore[nextHash]:
                 continue #not a good path
 
-            cameFrom[nextState] = current
-            gscore[nextState] = tentative_gscore
-            fscore[nextState] = gscore[nextState] + heuristicF(goal, nextState, nextState.drone_pos)
+            cameFrom[nextHash] = currentHash
+            gscore[nextHash] = tentative_gscore
+            #fscore[nextHash] = gscore[nextHash] + heuristicF(goal, nextState.currentStateMap, nextState.drone_pos)
+            fscore[nextHash] = gscore[nextHash] + heuristicF(goal, nextState)
 
-        return "failure"
+    return "failure"
 
 
 

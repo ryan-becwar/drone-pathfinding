@@ -1,5 +1,32 @@
 import numpy as np
 
+def distance_heuristic(goal, sim):
+    list = sim.to_list()
+    gx, gz, gy, gcolor = goal
+    mindist = float('inf')
+    minblock = list[0]
+    for block in list:
+        bx, bz, by, bcolor = block
+        if bcolor == gcolor:
+            dist = euclidean(block, goal)
+            if dist < mindist:
+                mindist = dist
+                minblock = block
+
+    dronedist = euclidean(minblock, sim.drone_pos)
+
+
+    goalcol = sim.state()[0][gx][gz][:gy]
+
+    layercost = 0
+    for item in goalcol:
+        if item == 'd' or item == ' ':
+            layercost += len(list) * 5
+
+    return dronedist + mindist + layercost
+
+
+        
 def block_heuristic(goal, sim, pfrom, pto):
     goalColor = goal[3]
     
