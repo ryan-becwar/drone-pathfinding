@@ -13,7 +13,7 @@ def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.99):
     T = 1.0
 
     nodesExplored = 0
-    while true:
+    while True:
         result.append(currentState)
         if currentState.goalTest(goal):
             return (result, nodesExplored)
@@ -42,7 +42,7 @@ def simulatedMoreAnnealAtSameT(startState, heuristicF, goal, TdecayFactor=0.99, 
     T = 1.0
 
     nodesExplored = 0
-    while true:
+    while True:
         result.append(currentState)
         if currentState.goalTest(goal):
             return (result, nodesExplored)
