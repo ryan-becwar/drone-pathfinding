@@ -113,7 +113,8 @@ class Simulator:
         if " " in below:
             drop = below.index(" ")
             # update currentStateMap first before swap due to release
-            self.currentStateMap[(x,z)].insert(drop, self.map[x][z][y-1])
+            self.currentStateMap[(x,z)][drop] = self.map[x][z][y-1]
+            self.currentStateMap[(x,z)][y-1] = ' '
 
             self.map[x][z][y-1], self.map[x][z][drop] = self.map[x][z][drop], self.map[x][z][y-1] 
         
@@ -146,9 +147,9 @@ class Simulator:
             return False
 
     def resultingStateFromAction(self, action):
-       temp_sim = Simulator(deepcopy(self.state()))
-       temp_sim.take_action(action)
-       return (temp_sim, 1.0) #TODO: Update cost to vary with action
+        temp_sim = Simulator(deepcopy(self.state()))
+        temp_sim.take_action(action)
+        return (temp_sim, 1.0) #TODO: Update cost to vary with action
 
     def possibleActions(self):
         return self.possible_commands()

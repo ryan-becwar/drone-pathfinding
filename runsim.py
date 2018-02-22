@@ -17,8 +17,6 @@ print()
 
 #print(sim.state())
 
-
-
 #result = a.aStarSearch(sim.state(), possibleActions, resultingStateFromAction, goalTest, costHeuristicFunc)
 goal = (3,3,0,'red')
 result = a.aStarSearch(sim, costHeuristicFunc, goal)
@@ -26,4 +24,4 @@ print()
 print(result)
 
 for sim in result[0]:
-    print(sim.to_list())
+    print(sim.currentStateMap)

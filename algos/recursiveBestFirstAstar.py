@@ -25,6 +25,7 @@ def aStarSearch(startState, heuristicF, goal):
     return aStarSearchHelper(startNode, heuristicF, float('inf'), goal)
 
 def aStarSearchHelper(parentNode, heuristicF, fmax, goal):
+    print(parentNode.state.drone_pos, " " , fmax)
     astarNodesCnt = 0
     if parentNode.state.goalTest(goal):
         return ([parentNode.state], parentNode.g, astarNodesCnt)
