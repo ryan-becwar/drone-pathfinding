@@ -146,9 +146,9 @@ class Simulator:
             return False
 
     def resultingStateFromAction(self, action):
-       temp_sim = Simulator(deepcopy(self.state()))
-       temp_sim.take_action(action)
-       return (temp_sim, 1.0) #TODO: Update cost to vary with action
+        temp_sim = Simulator(deepcopy(self.state()))
+        temp_sim.take_action(action)
+        return (temp_sim, 1.0) #TODO: Update cost to vary with action
 
     def possibleActions(self):
         return self.possible_commands()
