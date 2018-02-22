@@ -1,6 +1,7 @@
-WIDTH = 101 #x dimension
-LENGTH = 101 #z dimension
-HEIGHT = 51 #y dimension (vertical)
+from copy import deepcopy
+WIDTH = 11 #x dimension
+LENGTH = 11 #z dimension
+HEIGHT = 5 #y dimension (vertical)
 
 class Simulator:
     def __init__(self, state):
@@ -54,12 +55,12 @@ class Simulator:
         else:
             print("Drone is on floor")
 
-        return (self.to_list, self.attached)
+        return (self.to_list(), self.attached)
 
     def move(self, dx, dy, dz):
         if abs(dx) > 1 or abs(dy) > 1 or abs(dz) > 1:
             print("Invalid move magnitude: %s", (dx, dy, dz))
-            return (self.to_list, self.attached)
+            return (self.to_list(), self.attached)
         
         x, z, y = self.drone_pos
         xn, zn, yn = x+dx, z+dz, y+dy
@@ -67,7 +68,7 @@ class Simulator:
         if 0 <= xn < WIDTH and 0 <= zn < LENGTH and 0 <= yn < HEIGHT and (not self.attached or 0 <= (yn-1)): #drone inbounds
             if not (self.map[xn][zn][yn] == " " or ((dx, dy, dz) == (0,-1,0) and self.attached)):
                 print("Collision: %s", (xn, yn, zn))
-                return (self.to_list, self.attached)
+                return (self.to_list(), self.attached)
 
             if self.attached:
                 if self.map[xn][zn][yn-1] == " " or (dx, dy, dz) == (0,1,0):
@@ -81,7 +82,7 @@ class Simulator:
                     self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] 
                 else:
                     print("Block collision: %s", (xn, yn-1, zn))
-                    return (self.to_list, self.attached)
+                    return (self.to_list(), self.attached)
 
             # update currentStateMap first before drone pos swap
             self.currentStateMap[(x,z)][y] = ' '
@@ -95,9 +96,9 @@ class Simulator:
             self.drone_pos = (xn, zn, yn)
             
         else:
-            print("Move out of bounds: %s", (xn, yn, zn))
+            print("Move out of bounds: ", (xn, yn, zn), " Position: ", self.drone_pos)
 
-        return (self.to_list, self.attached)
+        return (self.to_list(), self.attached)
 
     def release(self):
         if not self.attached:
@@ -145,7 +146,7 @@ class Simulator:
             return False
 
     def resultingStateFromAction(self, action):
-       temp_sim = Simulator(self.state()) 
+       temp_sim = Simulator(deepcopy(self.state()))
        temp_sim.take_action(action)
        return (temp_sim, 1.0) #TODO: Update cost to vary with action
 
