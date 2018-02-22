@@ -27,8 +27,8 @@ class Simulator:
                 x, z, y, item = (int(data[0]), int(data[1]), int(data[2]), data[3])
                 map[x][z][y] = item
                 if (int(data[0]), int(data[1])) not in currentStateMap:
-                    currentStateMap[(int(data[0]), int(data[1]))] = []
-                currentStateMap[(int(data[0]), int(data[1]))].insert(int(data[2]), data[3]) 
+                    currentStateMap[(int(data[0]), int(data[1]))] = [' ' for i in range(HEIGHT)]
+                currentStateMap[(int(data[0]), int(data[1]))][int(data[2])] = data[3]
         return (map, currentStateMap)
 
 
@@ -72,10 +72,10 @@ class Simulator:
             if self.attached:
                 if self.map[xn][zn][yn-1] == " " or (dx, dy, dz) == (0,1,0):
                     # update currentStateMap first before block swap
-                    del self.currentStateMap[(x,z)][y-1]
+                    self.currentStateMap[(x,z)][y-1] = ' '
                     if (xn,zn) not in self.currentStateMap:
-                        self.currentStateMap[(xn,zn)]=[]   
-                    self.currentStateMap[(xn,zn)].insert(yn-1, self.map[x][z][y-1]) 
+                        self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+                    self.currentStateMap[(xn,zn)][yn-1] = self.map[x][z][y-1]
                     
                     #swap block below                    
                     self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] 
@@ -84,10 +84,10 @@ class Simulator:
                     return (self.to_list, self.attached)
 
             # update currentStateMap first before drone pos swap
-            del self.currentStateMap[(x,z)][y]
+            self.currentStateMap[(x,z)][y] = ' '
             if (xn,zn) not in self.currentStateMap:
-                self.currentStateMap[(xn,zn)]=[] 
-            self.currentStateMap[(xn,zn)].insert(yn, self.map[x][z][y]) 
+                self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+            self.currentStateMap[(xn,zn)][yn] = self.map[x][z][y]
 
             #swap drone position
             self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y]
@@ -147,7 +147,7 @@ class Simulator:
     def resultingStateFromAction(self, action):
        temp_sim = Simulator(self.state()) 
        temp_sim.take_action(action)
-       return (temp_sim.state(), 1.0) #TODO: Update cost to vary with action
+       return (temp_sim, 1.0) #TODO: Update cost to vary with action
 
     def possibleActions(self):
         return self.possible_commands()

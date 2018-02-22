@@ -4,7 +4,7 @@ parentdir = os.path.dirname(currentdir)
 sys.path.insert(0,parentdir) 
 
 from simulator import *
-goal = (3,3,0,'red')
+#goal = (3,3,0,'red')
 
 
 class Node:
@@ -19,12 +19,12 @@ class Node:
 
 
 #Takes a simulator as an initial state
-def aStarSearchRefactor(startState, heuristicF):
+def aStarSearch(startState, heuristicF, goal):
     h = heuristicF(goal, startState.currentStateMap)
     startNode = Node(state=startState, f=0+h, g=0, h=h)
-    return aStarSearchHelperRefactor(startNode, heuristicF, float('inf'))
+    return aStarSearchHelper(startNode, heuristicF, float('inf'), goal)
 
-def aStarSearchHelperRefactor(parentNode, heuristicF, fmax):
+def aStarSearchHelper(parentNode, heuristicF, fmax, goal):
     astarNodesCnt = 0
     if parentNode.state.goalTest(goal):
         return ([parentNode.state], parentNode.g)
@@ -36,7 +36,7 @@ def aStarSearchHelperRefactor(parentNode, heuristicF, fmax):
     for action in actions:
         astartNodesCnt = astarNodesCnt + 1
         (childState,stepCost) = parentNode.state.resultingStateFromAction(action)
-        h = heuristicF(goal, childState[2])
+        h = heuristicF(goal, childState.currentStateMap)
         g = parentNode.g + stepCost
         f = max(h+g, parentNode.f)
         childNode = Node(state=childState, f=f, g=g, h=h)
@@ -50,7 +50,7 @@ def aStarSearchHelperRefactor(parentNode, heuristicF, fmax):
         # next lowest f value
         alternativef = children[1].f if len(children) > 1 else float('inf')
         # expand best child, reassign its f value to be returned value
-        result,bestChild.f = aStarSearchHelper(bestChild, heuristicF, min(fmax,alternativef))
+        result,bestChild.f, _ = aStarSearchHelper(bestChild, heuristicF, min(fmax,alternativef), goal)
         if result is not "failure":               
             result.insert(0,parentNode.state)     
             return (result, bestChild.f, astarNodesCnt) 
