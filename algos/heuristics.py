@@ -13,7 +13,7 @@ def euclidean(source, dest):
 def findCntBlocksOnPillar(pillarBlocksList):
     return sum(1 for blk in pillarBlocksList if blk != ' ')
 
-def costHeuristicFunc(goal, currentStateMap, maxY=51):
+def costHeuristicFunc(goal, currentStateMap, dronePos, maxY=5):
     goalPillar = (goal[0], goal[1])
     if goalPillar not in currentStateMap:
         goalPillarBlocksList=[]
@@ -30,10 +30,10 @@ def costHeuristicFunc(goal, currentStateMap, maxY=51):
     # dronePos = find(lambda item: item[3] == 'd', currentStateList)
 
     # to be removed once we have refactored the algos to extract dronePos from current simulator.dronePos
-    for pillar, pillarBlocksList in currentStateMap.items():
-        if 'd' in pillarBlocksList:
-            dronePos = (pillar[0], pillar[1], pillarBlocksList.index('d'))
-            break
+    #for pillar, pillarBlocksList in currentStateMap.items():
+    #    if 'd' in pillarBlocksList:
+    #        dronePos = (pillar[0], pillar[1], pillarBlocksList.index('d'))
+    #        break
 
     # euclidean dist from drone pos to goal x, goal z, max(goal pillar y) +1 = len(goalPillarList)
 
@@ -130,7 +130,7 @@ for pillarcoordinate, pillar in currentStateMap.items():
     
 goal = (0,0,1,'green')
 
-print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateMap, maxY=2)))
+#print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateMap, maxY=2)))
 
 goal = (0,0,1,'yellow')
-print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateMap, maxY=2)))
+#print('cost to achieve {} is {}'.format(goal, costHeuristicFunc(goal, currentStateMap, maxY=2)))
