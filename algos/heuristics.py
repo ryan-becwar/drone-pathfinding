@@ -9,6 +9,8 @@ def find(f, currentStateList):
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
 
+def findCntBlocksOnPillar(pillarBlocksList):
+    return sum(1 for blk in pillarBlocksList if blk != ' ')
 
 def costHeuristicFunc(goal, currentStateMap, maxY=51):
     goalPillar = (goal[0], goal[1])
@@ -17,9 +19,9 @@ def costHeuristicFunc(goal, currentStateMap, maxY=51):
     else:
         goalPillarBlocksList = currentStateMap[goalPillar]
         
-    goalPillarTopY = len(goalPillarBlocksList)
+    goalPillarTopY = findCntBlocksOnPillar(goalPillarBlocksList)
     
-    if len(goalPillarBlocksList)-1 >= goal[2] and goalPillarBlocksList[goal[2]] == goal[3]:
+    if goalPillarTopY-1 >= goal[2] and goalPillarBlocksList[goal[2]] == goal[3]:
         # already goal achieved, return zero cost
         return 0
 
@@ -60,7 +62,7 @@ def costHeuristicFunc(goal, currentStateMap, maxY=51):
         if toBeMovedOut == 0:
             break
         if (pillar != goalPillar):
-            pillarTopY = len(pillarBlocksList)
+            pillarTopY = findCntBlocksOnPillar(pillarBlocksList)
             destsOnPillar = maxY - pillarTopY
 
             for i in range(destsOnPillar):
@@ -89,7 +91,7 @@ def costHeuristicFunc(goal, currentStateMap, maxY=51):
             break
         if (pillar != goalPillar):
             sourcesOnPillar = len(pillarBlocksList)
-            pillarTopY = len(pillarBlocksList)
+            pillarTopY = findCntBlocksOnPillar(pillarBlocksList)
 
             for i in range(sourcesOnPillar):
                 distFromSrcOnPillar = euclidean((goal[0], goal[1], goalPillarTopY-1+i), (pillar[0], pillar[1], pillarTopY-1-i))
@@ -101,13 +103,13 @@ def costHeuristicFunc(goal, currentStateMap, maxY=51):
     return droneDistToGoalPillarTop + moveOutCost + moveInCost
 
 # test
+
 dwElementBlock1=(0, 0, 0, 'red')
 dwElementBlock2=(0, 0, 1, 'yellow')
 dwElementBlock3=(0, -1, 0, 'blue')
 dwElementBlock4=(-1, -1, 0, 'green')
 dwElementBlock5=(-1, 0, 0, 'yellow')
 dwElementDrone =(0, -1, 0, 'd')
-
 currentStateList = [dwElementBlock1, dwElementBlock2, dwElementBlock3, dwElementBlock4, dwElementBlock5, dwElementDrone]
 currentStateMap ={}
 currentStateMap[(0,0)]=['red', 'yellow']
