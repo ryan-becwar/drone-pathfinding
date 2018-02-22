@@ -1,5 +1,6 @@
 import random as random
 import numpy as np
+from copy import deepcopy
 
 def pickRandomAction(actions):
     return random.choice(actions)
@@ -8,7 +9,7 @@ def pickRandomAction(actions):
 def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.99):
 
     result =[]
-    currentState = startState
+    currentState = deepcopy(startState)
     currentStateCost = heuristicF(goal, currentState.currentStateMap, currentState.drone_pos)
     T = 1.0
 
@@ -35,7 +36,7 @@ def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.99):
 
         if dE < 0 or probabilityOfAcceptingRandomAction > random.random():
             nodesExplored = nodesExplored + 1
-            currentState = nextState
+            currentState = deepcopy(nextState)
             currentStatecost = nextStateCost
 
         T = T*TdecayFactor
@@ -44,7 +45,7 @@ def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.99):
 def simulatedMoreAnnealAtSameT(startState, heuristicF, goal, TdecayFactor=0.99, numAnnealAtSameT=100):
 
     result =[]
-    currentState = startState
+    currentState = deepcopy(startState)
     currentStateCost = heuristicF(goal, currentState.currentStateMap, currentState.drone_pos)
     T = 1.0
 
@@ -69,7 +70,7 @@ def simulatedMoreAnnealAtSameT(startState, heuristicF, goal, TdecayFactor=0.99, 
 
         if dE < 0 or probabilityOfAcceptingRandomAction > random.random():
             nodesExplored = nodesExplored + 1
-            currentState = nextState
+            currentState = deepcopy(nextState)
             currentStatecost = nextStateCost
 
         T = T*TdecayFactor
