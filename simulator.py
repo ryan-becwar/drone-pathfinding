@@ -166,6 +166,21 @@ class Simulator:
     def to_list(self):
         return([(x, z, y, self.map[x][z][y]) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if self.map[x][z][y] != " "])
 
+    #returns the list of top-level blocks on the map
+    def top_level_blocks(self):
+        return [(x, z, y, self.map[x][z][y]) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if self.map[x][z][y] != " " and self.map[x][z][y+1] == " "]
+
+    #return a list of positions on the map that a block could be placed, ignoring the position that block is already
+    def top_level_positions(self, ignore):
+        return [(x, z, y) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if (x, z) != ignore and self.map[x][z][y] == " " and (y == 0 or self.map[x][z][y-1] != " ")]
+
+    def possible_block_moves(self):
+        actions = []
+        for top_level in self.top_level_blocks():
+            for position in self.top_level_positions((top_level[0], top_level[1])):
+                actions.append((top_level, position))
+        return actions
+
     #returns the list of possible commands in tuple format based on current state (dx, dy, dz, "action")
     def possible_commands(self):
         x, z, y = self.drone_pos

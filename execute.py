@@ -8,8 +8,9 @@ import algos.IDS as ids
 sim = s.Simulator.from_file("gamestates/world100")
 locations = sim.to_list()
 dimensions = (s.WIDTH, s.LENGTH, s.HEIGHT)
-p.plotBoard(locations, dimensions)
+#p.plotBoard(locations, dimensions)
 
+print(sim.possible_block_moves())
 
 depthLimit = 10
 ids.depthLimitedSearch(startState, goalState, possibleActionsF, resultingStateFromActionF, depthLimit)
