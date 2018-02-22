@@ -96,7 +96,7 @@ class Simulator:
             self.drone_pos = (xn, zn, yn)
             
         else:
-            print("Move out of bounds: ", (xn, yn, zn), " Position: ", self.drone_pos)
+            print("Move out of bounds: ", (xn, zn, yn), " Position: ", self.drone_pos, " Attached: ", self.attached)
 
         return (self.to_list(), self.attached)
 
