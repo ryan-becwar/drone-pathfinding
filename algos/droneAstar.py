@@ -60,5 +60,45 @@ def aStarSearchHelper(parentNode, fmax, goal):
         
         
         
+#Takes a simulator as an initial state
+def directaStarSearch(startState, goal):
+    h = heuristics.euclidean(goal, startState)
+    startNode = Node(state=startState, f=0+h, g=0, h=h)
+    return directaStarSearchHelper(startNode, float('inf'), goal)
+
+def directaStarSearchHelper(parentNode, fmax, goal):
+    astarNodesCnt = 0
+    if parentNode.state.goalTest(goal):
+        return ([parentNode.state], parentNode.g)
+    ## Construct list of children nodes with f, g, and h values
+    actions = sim.possible_actions()
+    if not actions:
+        return ("failure", float('inf'), astarNodesCnt)
+    children = []
+    for action in actions:
+        astartNodesCnt = astarNodesCnt + 1
+        (childState,stepCost) = parentNode.state + action, 1
+        h = heuristics.euclidean(goal, childState)
+        g = parentNode.g + stepCost
+        f = max(h+g, parentNode.f)
+        childNode = Node(state=childState, f=f, g=g, h=h)
+        children.append(childNode)
+    while True:
+        # find best child
+        children.sort(key = lambda n: n.f) # sort by f value
+        bestChild = children[0]
+        if bestChild.f > fmax or bestChild.f == float('inf'):
+            return ("failure",bestChild.f, astarNodesCnt)
+        # next lowest f value
+        alternativef = children[1].f if len(children) > 1 else float('inf')
+        # expand best child, reassign its f value to be returned value
+        result,bestChild.f, _ = directaStarSearchHelper(bestChild, min(fmax,alternativef), goal)
+        if result is not "failure":               
+            result.insert(0,parentNode.state)
+            return (result, bestChild.f, astarNodesCnt)
+        
+        
+        
+        
 
 print(aStarSearch(Simulator.from_file("../gamestates/pillar"), (3, 3, 0, 'red')))
