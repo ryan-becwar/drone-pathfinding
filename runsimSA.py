@@ -16,10 +16,11 @@ print()
 
 
 goal = (3,3,0,'red')
-result = sa.simulatedAnneal(sim, costHeuristicFunc, goal)
-#result = sa.simulatedMoreAnnealAtSameT(sim, costHeuristicFunc, goal)
+#result = sa.simulatedAnneal(sim, costHeuristicFunc, goal)
+result = sa.simulatedMoreAnnealAtSameT(sim, costHeuristicFunc, goal)
 print()
-print(result)
+print(result[1])
+print('{} actions taken'.format(len(result[1])))
 
-for sim in result[0]:
-    print(sim.to_list())
+#for sim in result[0]:
+#    print(sim.to_list())

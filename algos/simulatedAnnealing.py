@@ -9,6 +9,7 @@ def pickRandomAction(actions):
 def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.99):
 
     result =[]
+    actionsTaken=[]
     currentState = startState
     currentStateCost = heuristicF(goal, currentState.currentStateMap, currentState.drone_pos)
     T = 1.0
@@ -20,17 +21,17 @@ def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.99):
             return (result, nodesExplored)
         possibleActions = currentState.possibleActions()
         action = pickRandomAction(possibleActions)
+        actionsTaken.append(action)
 
         nextState = currentState.resultingStateFromAction(action)[0]
 
         if nextState.goalTest(goal):
             result.append(nextState)
-            return (result, nodesExplored)
+            return (result, actionsTaken, nodesExplored)
 
         nextStateCost = heuristicF(goal, nextState.currentStateMap, nextState.drone_pos)
         dE = nextStateCost - currentStateCost
 
-        #print('dE={}, T={}, rounded dE/T={}'.format(dE, T, round(dE/T)))
 
         probabilityOfAcceptingRandomAction = np.exp(-dE/T)
 
@@ -44,7 +45,8 @@ def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.99):
 
 def simulatedMoreAnnealAtSameT(startState, heuristicF, goal, TdecayFactor=0.99, numAnnealAtSameT=100):
 
-    result =[]
+    result=[]
+    actionsTaken=[]
     currentState = startState
     currentStateCost = heuristicF(goal, currentState.currentStateMap, currentState.drone_pos)
     T = 1.0
@@ -53,18 +55,20 @@ def simulatedMoreAnnealAtSameT(startState, heuristicF, goal, TdecayFactor=0.99, 
     while True:
         result.append(currentState)
         if currentState.goalTest(goal):
-            return (result, nodesExplored)
+            return (result, actionsTaken, nodesExplored)
 
         for  i in range(numAnnealAtSameT):
             
             possibleActions = currentState.possibleActions()
             action = pickRandomAction(possibleActions)
+            actionsTaken.append(action)
 
             nextState = currentState.resultingStateFromAction(action)[0]
 
             if nextState.goalTest(goal):
                 result.append(nextState)
-                return (result, nodesExplored)
+                return (result, actionsTaken, nodesExplored)
+
             nextStateCost = heuristicF(goal, nextState.currentStateMap, nextState.drone_pos)
             dE = nextStateCost - currentStateCost
 
