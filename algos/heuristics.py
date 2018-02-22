@@ -1,5 +1,47 @@
 import numpy as np
 
+def block_heuristic(goal, sim, pfrom, pto):
+    goalColor = goal[3]
+    
+    #overallHighestGoal = -1
+    #for x in range(len(currentStateMap)):
+    #    for z in range(len(currentStateMap[x])):
+    #        for y in range(len(currentStateMap[x][z])):
+    
+    
+    highestGoal = -1
+    for y in range(len(sim.map[pfrom[0]][pfrom[1]])):
+        if sim.map[pfrom[0]][pfrom[1]][y] == goalColor:
+            highestGoal = y
+            
+    goalHeight = sim.pillar_height(goal[0], goal[1])
+    heightDiff = goalHeight - goal[2]
+    
+    if goalHeight > goal[2] and pfrom == (goal[0], goal[1]):
+        return goalHeight - goal[2]
+    
+    if goalHeight < goal[2] - 1 and pto == (goal[0], goal[1]):
+        return goal[2] - goalHeight
+    
+    
+    
+    isGoalType = sim.map[pfrom[0]][pfrom[1]][pfrom[2]] == goalColor
+    if isGoalType:
+        sat = 0
+        if pto[0] == goal[0]:
+            sat += 1
+        if pto[1] == goal[1]:
+            sat += 1
+        if pto[2] == goal[2]:
+            sat += 1
+        if sat == 3:
+            return 0
+    
+    if highestGoal == -1:
+        return float('inf')
+
+
+
 
 def find(f, currentStateList):
     for item in currentStateList:

@@ -69,32 +69,54 @@ class Simulator:
             if not (self.map[xn][zn][yn] == " " or ((dx, dy, dz) == (0,-1,0) and self.attached)):
                 print("Collision: %s", (xn, yn, zn))
                 return (self.to_list(), self.attached)
+            if not ((self.attached and self.map[xn][zn][yn-1] == " ") or (dx, dy, dz) == (0,1,0)):
+                print("Block collision: %s", (xn, yn-1, zn))
+                return (self.to_list(), self.attached)
 
-            if self.attached:
-                if self.map[xn][zn][yn-1] == " " or (dx, dy, dz) == (0,1,0):
-                    # update currentStateMap first before block swap
-                    self.currentStateMap[(x,z)][y-1] = ' '
-                    if (xn,zn) not in self.currentStateMap:
-                        self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
-                    self.currentStateMap[(xn,zn)][yn-1] = self.map[x][z][y-1]
-                    
-                    #swap block below                    
-                    self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] 
-                else:
-                    print("Block collision: %s", (xn, yn-1, zn))
-                    return (self.to_list(), self.attached)
+            #swap drone first if moving up
+            if(dy >= 0):
+                #drone swap
+                self.currentStateMap[(x,z)][y] = ' '
+                if (xn,zn) not in self.currentStateMap:
+                    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+                self.currentStateMap[(xn,zn)][yn] = self.map[x][z][y]
 
-            # update currentStateMap first before drone pos swap
-            self.currentStateMap[(x,z)][y] = ' '
-            if (xn,zn) not in self.currentStateMap:
-                self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
-            self.currentStateMap[(xn,zn)][yn] = self.map[x][z][y]
+                #swap drone position
+                self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y]
 
-            #swap drone position
-            self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y]
+                self.drone_pos = (xn, zn, yn)
 
-            self.drone_pos = (xn, zn, yn)
-            
+                #block swap
+                # update currentStateMap first before block swap
+                self.currentStateMap[(x,z)][y-1] = ' '
+                if (xn,zn) not in self.currentStateMap:
+                    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+                self.currentStateMap[(xn,zn)][yn-1] = self.map[x][z][y-1]
+                
+                #swap block below                    
+                self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] 
+            else:
+                #block swap
+                # update currentStateMap first before block swap
+                self.currentStateMap[(x,z)][y-1] = ' '
+                if (xn,zn) not in self.currentStateMap:
+                    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+                self.currentStateMap[(xn,zn)][yn-1] = self.map[x][z][y-1]
+                
+                #swap block below                    
+                self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] 
+
+                #drone swap
+                self.currentStateMap[(x,z)][y] = ' '
+                if (xn,zn) not in self.currentStateMap:
+                    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+                self.currentStateMap[(xn,zn)][yn] = self.map[x][z][y]
+
+                #swap drone position
+                self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y]
+
+                self.drone_pos = (xn, zn, yn)
+
         else:
             print("Move out of bounds: ", (xn, zn, yn), " Position: ", self.drone_pos, " Attached: ", self.attached)
 
@@ -168,6 +190,12 @@ class Simulator:
         return self.map[x][z][y] == " " or self.map[x][z][y] == "d"
     def space_taken(self, x, z, y):
         return y == -1 or (self.map[x][z][y] != " " and self.map[x][z][y] != "d")
+    def pillar_height(self, x, z):
+        for x in range(len(self.map)):
+            for z in range(len(self.map[x])):
+                for y in range(len(self.map[x][z])):
+                    if space_empty(x, z, y):
+                        return y
 
     #returns the state as a list of objects
     def to_list(self):
