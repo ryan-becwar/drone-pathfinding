@@ -1,7 +1,11 @@
 from copy import deepcopy
+import numpy as np
 WIDTH = 11 #x dimension
 LENGTH = 11 #z dimension
 HEIGHT = 5 #y dimension (vertical)
+
+def euclidean(source, dest):
+    return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
 
 class Simulator:
     def __init__(self, state):
@@ -65,6 +69,24 @@ class Simulator:
             print("Drone is on floor")
 
         return (self.to_list(), self.attached)
+
+    def move_block(self, startpos, endpos):
+        x0, z0, y0 = startpos
+        x1, z1, y1 = endpos
+        if self.map[x0][z0][y0] == ' ' or self.map[x0][z0][y0] == 'd':
+            print("No block at starting position", startpos)
+            return self.to_list()
+        if self.map[x1][z1][y1] != ' ':
+            print("Ending position not empty", endpos)
+            return self.to_list()
+        below = self.map[x1][z1][:y1] #list of all blocks below destination
+        if 'd' in below or ' ' in below:
+            print("Destination not supported by blocks", endpos, "column: ", below)
+            return self.to_list()
+        self.map[x1][z1][y1] = self.map[x0][z0][y0]
+        self.map[x0][z0][y1] = ' '
+        return self.to_list()
+
 
     def move(self, dx, dy, dz):
         if abs(dx) > 1 or abs(dy) > 1 or abs(dz) > 1:
@@ -171,6 +193,9 @@ class Simulator:
             print("Invalid move: ", action)
             return
 
+    def take_block_action(self, action):
+        return self.move_block((action[0][0], action[0][1], action[0][2]), action[1])
+
     #Algorithm interaction methods
     def goalTest(self, goal):
         x, z, y, color = goal
@@ -226,6 +251,11 @@ class Simulator:
             for position in self.top_level_positions((top_level[0], top_level[1])):
                 actions.append((top_level, position))
         return actions
+
+    def resultingStateFromBlockAction(self, action):
+        temp_sim = Simulator(deepcopy(self.state()))
+        temp_sim.take_block_action(action)
+        return (temp_sim, 1.0) #TODO: Update cost to vary with action
 
     #returns the list of possible commands in tuple format based on current state (dx, dy, dz, "action")
     def possible_commands(self):

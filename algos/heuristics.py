@@ -25,6 +25,20 @@ def distance_heuristic(goal, sim):
 
     return dronedist + mindist + layercost
 
+def stack_heuristic(goal, sim):
+    gx, gz, gy, gcolor = goal
+
+    goalcost = 1
+    if sim.state()[0][gx][gz][gy] == gcolor:
+        goalcost = 0
+
+    goalcol = sim.state()[0][gx][gz][:gy]
+    layercost = 0
+    for item in goalcol:
+        if item == 'd' or item == ' ':
+            layercost += 1
+
+    return goalcost + layercost
 
         
 def block_heuristic(goal, sim, pfrom, pto):
