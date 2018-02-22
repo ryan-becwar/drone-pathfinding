@@ -76,15 +76,23 @@ class Simulator:
         if self.map[x0][z0][y0] == ' ' or self.map[x0][z0][y0] == 'd':
             print("No block at starting position", startpos)
             return self.to_list()
-        if self.map[x1][z1][y1] != ' ':
+        if self.map[x1][z1][y1] != ' ' and self.map[x1][z1][y1] != 'd':
             print("Ending position not empty", endpos)
             return self.to_list()
         below = self.map[x1][z1][:y1] #list of all blocks below destination
         if 'd' in below or ' ' in below:
-            print("Destination not supported by blocks", endpos, "column: ", below)
+            print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below, self.currentStateMap)
             return self.to_list()
+
+        #update blocks in statemap
+        self.currentStateMap[(x0,z0)][y0] = ' '
+        if (x1,z1) not in self.currentStateMap:
+            self.currentStateMap[(x1,z1)]=[' ' for i in range(HEIGHT)]
+        self.currentStateMap[(x1,z1)][y1] = self.map[x0][z0][y0]
+
+        #update in map
         self.map[x1][z1][y1] = self.map[x0][z0][y0]
-        self.map[x0][z0][y1] = ' '
+        self.map[x0][z0][y0] = ' '
         return self.to_list()
 
 
