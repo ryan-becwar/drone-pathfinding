@@ -36,9 +36,9 @@ def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.90):
             print('T is <=0')
             probabilityOfAcceptingRandomAction=np.longdouble(1.0)
         else:
-            qt = -dE/T
-            probabilityOfAcceptingRandomAction = np.longdouble(np.exp(round(qt, 5)))
-            #   print('dE={}, T={}, rounded -dE/T={}'.format(dE, T, round(-dE/T, 5)))
+            qt = round((abs(dE))/T, 5)
+            #qt = round(dE/T, 5)
+            probabilityOfAcceptingRandomAction = np.longdouble(np.exp(-qt))
 
         if dE <= 0 or probabilityOfAcceptingRandomAction > np.longdouble(random.random()):
             nodesExplored = nodesExplored + 1
@@ -78,11 +78,12 @@ def simulatedMoreAnnealAtSameT(startState, heuristicF, goal, TdecayFactor=0.8, n
             dE = round(nextStateCost - currentStateCost, 5)
            
             if T <=0:
-                #print('T is <=0')
+                print('T is <=0')
                 probabilityOfAcceptingRandomAction=np.longdouble(1.0)
             else:
-                qt = -dE/T
-                probabilityOfAcceptingRandomAction = np.longdouble(np.exp(round(qt,5)))
+                qt = round((abs(dE))/T, 5)
+                #qt = round(dE/T, 5)
+                probabilityOfAcceptingRandomAction = np.longdouble(np.exp(-qt))
 
             if dE <= 0 or probabilityOfAcceptingRandomAction > np.longdouble(random.random()):
                 nodesExplored = nodesExplored + 1
