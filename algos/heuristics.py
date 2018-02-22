@@ -9,6 +9,7 @@ def find(f, currentStateList):
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
 
+# to work around empty blocks in pillar blocks list
 def findCntBlocksOnPillar(pillarBlocksList):
     return sum(1 for blk in pillarBlocksList if blk != ' ')
 
