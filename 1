@@ -21,11 +21,9 @@ def simulatedAnneal(startState, heuristicF, goal, TdecayFactor=0.99):
         action = pickRandomAction(possibleActions)
 
         nextState = currentState.resultingStateFromAction(action)[0]
-
         if nextState.goalTest(goal):
             result.append(nextState)
-            return (result, nodesExplored)
-
+	    return (result, nodesExplored)
         nextStateCost = heuristicF(goal, nextState.currentStateMap, nextState.drone_pos)
         dE = nextStateCost - currentStateCost
 
@@ -57,15 +55,10 @@ def simulatedMoreAnnealAtSameT(startState, heuristicF, goal, TdecayFactor=0.99, 
         action = pickRandomAction(possibleActions)
 
         nextState = currentState.resultingStateFromAction(action)[0]
-
-        if nextState.goalTest(goal):
-            result.append(nextState)
-            return (result, nodesExplored)
-
         nextStateCost = heuristicF(goal, nextState.currentStateMap, nextState.drone_pos)
         dE = nextStateCost - currentStateCost
 
-        probabilityOfAcceptingRandomAction = np.exp(-dE/T)
+        probabilityOfAcceptingRandomAction = np.exp(round(dE/T))
 
         if dE < 0 or probabilityOfAcceptingRandomAction > random.random():
             nodesExplored = nodesExplored + 1
