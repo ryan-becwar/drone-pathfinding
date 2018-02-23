@@ -20,8 +20,9 @@ result = a.blockaStar(sim,goal, stack_heuristic)
 print()
 print("RESULT: ")
 for sim in result:
-    print(sim.currentStateMap)
-    print(sim.to_list())
+    print(sim[0].currentStateMap)
+    print(sim[0].to_list())
+    print(sim[1])
     print()
 
 print("Time elapsed", time.time() - start_time)

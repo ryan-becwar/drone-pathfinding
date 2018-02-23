@@ -68,7 +68,7 @@ def blockaStar(start, goal, heuristicF):
     open = set([start.__hash__()])
 
     hashdict = {}
-    hashdict[start.__hash__()] = start
+    hashdict[start.__hash__()] = (start, "start")
     cameFrom = {}
     gscore = {}
     gscore[start.__hash__()] = 0
@@ -78,19 +78,19 @@ def blockaStar(start, goal, heuristicF):
     while open:
         #current is the node with the smallest fscore
         current = hashdict[min(open, key=fscore.get)]
-        currentHash = current.__hash__()
-        print(current.currentStateMap)
-        if current.goalTest(goal):
+        currentHash = current[0].__hash__()
+        print(current[0].currentStateMap)
+        if current[0].goalTest(goal):
             hashpath = reconstruct_path(cameFrom, currentHash)
             return [hashdict[x] for x in hashpath]
 
         open.remove(currentHash)
         closed.add(currentHash)
 
-        for action in current.possible_block_moves():
-            nextState, nextCost = current.resultingStateFromBlockAction(action)
+        for action in current[0].possible_block_moves():
+            nextState, nextCost = current[0].resultingStateFromBlockAction(action)
             nextHash = nextState.__hash__()
-            hashdict[nextHash] = nextState
+            hashdict[nextHash] = (nextState, action)
             if nextHash in closed:
                 continue
 
