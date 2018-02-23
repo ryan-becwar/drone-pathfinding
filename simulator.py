@@ -1,8 +1,8 @@
 from copy import deepcopy
 import numpy as np
-WIDTH = 101 #x dimension
-LENGTH = 101 #z dimension
-HEIGHT = 50 #y dimension (vertical)
+WIDTH = 11 #x dimension
+LENGTH = 11 #z dimension
+HEIGHT = 5 #y dimension (vertical)
 
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
@@ -215,7 +215,11 @@ class Simulator:
     def resultingStateFromAction(self, action):
         temp_sim = Simulator(deepcopy(self.state()))
         temp_sim.take_action(action)
-        return (temp_sim, 1.0) #TODO: Update cost to vary with action
+        #x0, z0, y0, _ = action[0]
+        #x1, z1, y1 = action[1]
+        #dist = max(abs(x0 - x1), abs(z0 - z1), abs(y0 -y1))
+        #return (temp_sim, dist)
+        return (temp_sim, 0)
 
     def possibleActions(self):
         return self.possible_commands()

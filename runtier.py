@@ -8,6 +8,7 @@ def testF(possible_commandsF):
     print(possible_commandsF())
 
 sim = Simulator.from_file("gamestates/reversestack")
+#sim = Simulator.from_file("gamestates/simple")
 
 
 print(sim.state())
