@@ -9,10 +9,10 @@ def testF(possible_commandsF):
 
 numactions=0
 times=0
-for i in range(20):
+for i in range(5):
     sim = Simulator.from_file("gamestates/simple")
 
-    goal = (3,3,0,'red')
+    goal = (3,3,1,'red')
     before=time.time()
     result = sa.simulatedAnneal(sim, costHeuristicFunc, goal)
     after=time.time()
@@ -20,14 +20,14 @@ for i in range(20):
 
     numactions = numactions + len(result[1])
     times = times + after-before
-print('Average {} actions taken in average {} seconds with simple SA'.format(numactions/20, times/20))
+print('Average {} actions taken in average {} seconds with simple SA'.format(numactions/5, times/5))
 
 numactionsMore=0
 timesMore=0
-for i in range(20):
+for i in range(5):
     sim = Simulator.from_file("gamestates/simple")
 
-    goal = (3,3,0,'red')
+    goal = (3,3,1,'red')
     before=time.time()
     result = sa.simulatedMoreAnnealAtSameT(sim, costHeuristicFunc, goal)
     after=time.time()
@@ -35,6 +35,6 @@ for i in range(20):
 
     numactionsMore = numactionsMore + len(result[1])
     timesMore = timesMore + after-before
-print('Average {} actions taken in average {} seconds for SA with more anneal at same T'.format(numactionsMore/20, timesMore/20))
+print('Average {} actions taken in average {} seconds for SA with more anneal at same T'.format(numactionsMore/5, timesMore/5))
 
 

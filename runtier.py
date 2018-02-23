@@ -7,21 +7,29 @@ import time
 def testF(possible_commandsF):
     print(possible_commandsF())
 
-sim = Simulator.from_file("gamestates/reversestack")
-#sim = Simulator.from_file("gamestates/simple")
+#sim = Simulator.from_file("gamestates/reversestack")
+sim = Simulator.from_file("gamestates/simple")
 
 
 print(sim.state())
 print()
 
-goal = (5,3,4,'red')
+#case 1
+goal = (3,3,0,'red')
+
+#case 2
+#goal = (3,3,2,'red')
+
+#case 3
+#goal = (5,3,4,'red')
 
 start_time = time.time()
 result = a.blockaStar(sim,goal, stack_heuristic)
 
 dronePath = []
-for i in range(1,len(result)):
+for i in range(0,len(result)-1):
     sim, action = result[i]
+    print(result[i])
     xd0, zd0, yd0, _ = action[0]
     xd1, zd1, yd1 = action[1]
 
@@ -33,7 +41,7 @@ for i in range(1,len(result)):
 
 print()
 print("Time elapsed", time.time() - start_time)
-print("Path length: ", len(dronePath))
+print("Path length: ", len(dronePath) + 2 * (len(result)-1))
 print()
 print("RESULT: ")
 for sim in result:
