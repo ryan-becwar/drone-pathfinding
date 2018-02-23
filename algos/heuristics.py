@@ -95,6 +95,11 @@ def euclidean(source, dest):
 def chebyshev(source, dest):
     return max(abs(source[0] - dest[0]), abs(source[1] - dest[1]), abs(source[2] - dest[2]))
 
+def chebyshev_sim(goal, sim):
+    gx,gz,gy,_ = goal
+    return chebyshev((gx,gz,gy), sim.drone_pos)
+
+
 # to work around empty blocks in pillar blocks list
 def findCntBlocksOnPillar(pillarBlocksList):
     return sum(1 for blk in pillarBlocksList if blk != ' ')

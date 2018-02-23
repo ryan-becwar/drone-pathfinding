@@ -33,7 +33,7 @@ def aStar(start, goal, heuristicF):
         #current is the node with the smallest fscore
         current = hashdict[min(open, key=fscore.get)]
         currentHash = current.__hash__()
-        print(current.currentStateMap)
+        #print(current.currentStateMap)
         if current.goalTest(goal):
             hashpath = reconstruct_path(cameFrom, currentHash)
             return [hashdict[x] for x in hashpath]
@@ -79,7 +79,7 @@ def blockaStar(start, goal, heuristicF):
         #current is the node with the smallest fscore
         current = hashdict[min(open, key=fscore.get)]
         currentHash = current[0].__hash__()
-        print(current[0].currentStateMap)
+        #print(current[0].currentStateMap)
         if current[0].goalTest(goal):
             hashpath = reconstruct_path(cameFrom, currentHash)
             return [hashdict[x] for x in hashpath]
