@@ -8,13 +8,13 @@ def testF(possible_commandsF):
     print(possible_commandsF())
 
 #sim = Simulator.from_file("gamestates/simple")
-sim = Simulator.from_file("gamestates/world100")
+sim = Simulator.from_file("gamestates/simple")
 
 
 print(sim.state())
 print()
 
-goal = (0,4,6,'red')
+goal = (0,4,3,'red')
 
 start_time = time.time()
 result = a.blockaStar(sim,goal, stack_heuristic)
