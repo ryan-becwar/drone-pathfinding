@@ -1,4 +1,4 @@
-from newsimulator import *
+from simulator import *
 from algos.heuristics import costHeuristicFunc
 import algos.simulatedAnnealing as sa
 import time as time
