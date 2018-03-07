@@ -20,7 +20,8 @@ class Node:
 
 #Takes a simulator as an initial state
 def aStarSearch(startState, heuristicF, goal):
-    h = heuristicF(goal, startState.currentStateMap, startState.drone_pos)
+    #h = heuristicF(goal, startState.currentStateMap, startState.drone_pos)
+    h = heuristicF(goal, startState)
     startNode = Node(state=startState, f=0+h, g=0, h=h)
     return aStarSearchHelper(startNode, heuristicF, float('inf'), goal)
 
@@ -37,7 +38,8 @@ def aStarSearchHelper(parentNode, heuristicF, fmax, goal):
     for action in actions:
         astartNodesCnt = astarNodesCnt + 1
         (childState,stepCost) = parentNode.state.resultingStateFromAction(action)
-        h = heuristicF(goal, childState.currentStateMap, childState.drone_pos)
+        #h = heuristicF(goal, childState.currentStateMap, childState.drone_pos)
+        h = heuristicF(goal, childState)
         g = parentNode.g + stepCost
         f = max(h+g, parentNode.f)
         childNode = Node(state=childState, f=f, g=g, h=h)

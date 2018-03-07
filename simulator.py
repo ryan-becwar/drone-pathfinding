@@ -2,7 +2,7 @@ from copy import deepcopy
 import numpy as np
 WIDTH = 11 #x dimension
 LENGTH = 11 #z dimension
-HEIGHT = 5 #y dimension (vertical)
+HEIGHT = 6 #y dimension (vertical)
 
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
@@ -123,7 +123,8 @@ class Simulator:
                 #swap drone position
                 self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y]
 
-                self.drone_pos = (xn, zn, yn)
+                #self.drone_pos = (xn, zn, yn)
+                self.drone_pos = self.find_drone()
 
                 if(self.attached):
                     #block swap
@@ -156,7 +157,8 @@ class Simulator:
                 #swap drone position
                 self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y]
 
-                self.drone_pos = (xn, zn, yn)
+                #self.drone_pos = (xn, zn, yn)
+                self.drone_pos = self.find_drone()
 
         else:
             print("Move out of bounds: ", (xn, zn, yn), " Position: ", self.drone_pos, " Attached: ", self.attached)
@@ -219,7 +221,7 @@ class Simulator:
         #x1, z1, y1 = action[1]
         #dist = max(abs(x0 - x1), abs(z0 - z1), abs(y0 -y1))
         #return (temp_sim, dist)
-        return (temp_sim, 0)
+        return (temp_sim, 1.0)
 
     def possibleActions(self):
         return self.possible_commands()
