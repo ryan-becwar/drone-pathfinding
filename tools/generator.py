@@ -1,6 +1,6 @@
 import random as random
 
-def gen_file(filename, numBlocks=500000, maxBlocksPerColumn=50, blockColors=['red', 'green', 'blue', 'yellow'], dimensions=(101, 101, 51)):
+def gen_file(filename, numBlocks=500000, maxBlocksPerColumn=50, blockColors=['r', 'g', 'b', 'y']):
     stateMap = {}
     # it has <= 101x101 and >= minColumns(=numBlocks//maxBlocksPerColumn) columns of blocks - columns identified by (x, z) coordinates. 
     # every column has <= maxBlocksPerColumn blocks along the y axis 
@@ -10,8 +10,8 @@ def gen_file(filename, numBlocks=500000, maxBlocksPerColumn=50, blockColors=['re
     while True:
         if cntBlocksOnTable == numBlocks:
             break
-        randomColumnX = random.randint(0, dimensions[0]-1)
-        randomColumnZ = random.randint(0, dimensions[1]-1)
+        randomColumnX = random.randint(-50,50)
+        randomColumnZ = random.randint(-50,50)
         randomNumBlocksOnThisColumn = random.randint(0,maxBlocksPerColumn)
         if randomNumBlocksOnThisColumn > 0:
             if (randomColumnX, randomColumnZ) not in stateMap:
@@ -38,3 +38,4 @@ def gen_file(filename, numBlocks=500000, maxBlocksPerColumn=50, blockColors=['re
     with open(filename, 'w') as out:
         out.writelines(['{0} {1} {2} {3}\n'.format(pillar[0], pillar[1], blkIdx, blk) 
                         for pillar, blkList in stateMap.items() for blkIdx, blk in enumerate(blkList)])
+
