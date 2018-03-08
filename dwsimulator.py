@@ -197,6 +197,15 @@ class DWSimulator:
             self.log('Invalid action requested to be reverted!')
         return
 
+    def isGoal(self, goal):
+        goalXZ = (goal[0], goal[1])
+        goalY = goal[2]
+        goalItem = goal[3]        
+        return goalXZ in self.stateMap and len(self.stateMap[goalXZ])-1 >= goalY and self.stateMap[goalXZ][goalY] is goalItem
+
+def goalTest(dwsim, goal):
+    return dwsim.isGoal(goal)
+
 ### test
 
 #sim = DWSimulator(Xrange=(-50,50), Zrange=(-50,50), Yrange=(0,50), filename='foo.txt', loglevel='verbose')
