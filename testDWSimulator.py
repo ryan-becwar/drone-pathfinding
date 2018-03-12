@@ -27,10 +27,10 @@ sim3x3x1.release()
 
 print(sim3x3x1.dronePos)
 
-sim3x3x1.possibleActions()
+for action in sim3x3x1.possibleActions():
+    sim3x3x1.takeAction(action)
+    print(sim3x3x1)
+    sim3x3x1.revertAction(action)
+    print(sim3x3x1)
 
-if (sim3x3x1.takeAction(("attach",))):
-	print("Sucess taking action")
-
-print(sim3x3x1)
 

@@ -168,7 +168,7 @@ class DWSimulator:
        
         status = False
         stepCost = -1.0
-        self.log("Taking action {}".format(action[0]))
+        self.log("Taking action {}".format(action))
         if action[0] == 'attach':
             status = self.attach()
             stepCost = 1.0
@@ -187,7 +187,7 @@ class DWSimulator:
     # takeAction call or called in a reverse ordered sequence of multiple corresponding previous takenAction calls
     # also should be called only if previously called corresponding takeAction had returned status = True (success)
     def revertAction(self, action):
-        self.log("Reverting action {}".format(action[0]))
+        self.log("Reverting action {}".format(action))
         if action[0] == 'attach':
             self.attached = False
         elif action[0] == 'release':
