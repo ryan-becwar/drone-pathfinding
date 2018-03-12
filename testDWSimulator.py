@@ -12,3 +12,25 @@ print('goalTest(42 -24 49 b)', goalTest(sim, (42, -24, 49, 'b')))
 sim.attach()
 print(sim)
 sim.release()
+
+gen_file("3x3x1.txt", numBlocks=9, maxBlocksPerColumn=1, Xrange=(-1,1), Zrange=(-1,1), Yrange=(0,1))
+f = open('3x3x1.txt', 'r')
+file_contents = f.read()
+print(file_contents)
+f.close()
+
+sim3x3x1 = DWSimulator(Xrange=(-1,1), Zrange=(-1,1), Yrange=(0,1), filename='3x3x1.txt', loglevel='verbose')
+
+print(sim3x3x1)
+
+sim3x3x1.release()
+
+print(sim3x3x1.dronePos)
+
+sim3x3x1.possibleActions()
+
+if (sim3x3x1.takeAction(("attach",))):
+	print("Sucess taking action")
+
+print(sim3x3x1)
+

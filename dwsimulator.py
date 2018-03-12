@@ -21,7 +21,7 @@ class DWSimulator:
                 if (x, z) not in self.stateMap:
                     self.stateMap[(x, z)] = ['']*(self.Yrange[1]+1)
                 self.stateMap[(x, z)][y] = item
-                if item is 'd':
+                if item == 'd':
                     self.dronePos = (x, z, y)        
         
     def __repr__(self):
@@ -134,9 +134,9 @@ class DWSimulator:
         droneX = self.dronePos[0]
         droneZ = self.dronePos[1]
         droneY = self.dronePos[2]        
-        droneColumnItems = self.statemap[droneXZ]        
+        droneColumnItems = self.stateMap[droneXZ]        
         # First find possible attaches
-        if droneY >= 1 and droneColumnItems[droneY - 1] is not '':
+        if droneY >= 1 and droneColumnItems[droneY - 1] != '' and (not self.attached) :
             actions.append(('attach',))
         # Now find possible releases
         if droneY >= 1 and '' in droneColumnItems[:droneY - 1]:
@@ -151,7 +151,7 @@ class DWSimulator:
             if (droneX + dx >= self.Xrange[0] and droneX + dx <= self.Xrange[1]) and \
                 (droneZ + dz >= self.Zrange[0] and droneZ + dz <= self.Zrange[1]) and \
                 (droneY + dy >= self.Yrange[0] and droneY + dy <= self.Yrange[1]) and \
-                (self.stateMap[(droneX + dx, droneZ + dz)][droneY + dy] is '') :
+                (self.stateMap[(droneX + dx, droneZ + dz)][droneY + dy] == '') :
                 # if attached, check whether attached block (1 below drone) can also move to corresponding new position
                 if self.attached and (self.stateMap[(droneX + dx, droneZ + dz)][droneY + dy - 1] is not '') :
                     continue                    
@@ -165,53 +165,45 @@ class DWSimulator:
     def takeAction(self, action):
         # returns a tuple of True/False depending on success/failure status of action and step cost.
         # step cost is euclidean for move, 1 for release/attach
+       
         status = False
         stepCost = -1.0
-        if action[0] is 'attach':
+        self.log("Taking action {}".format(action[0]))
+        if action[0] == 'attach':
             status = self.attach()
             stepCost = 1.0
-        elif action[0] is 'release':
+        elif action[0] == 'release':
             status = self.release()
             stepCost = 1.0
-        elif action[0] is 'move':
+        elif action[0] == 'move':
             actionStr, dx, dz, dy = action
             status = self.move(dx, dz, dy)
             stepCost = euclidean(self.dronePos, (self.dronePos[0]+dx, self.dronePos[1]+dz, self.dronePos[2]+dy))
         else:
-            self.log('Invalid action requested!')
-            
+            self.log('Invalid action requested!')            
         return (status, stepCost)
     
     # assumes a valid action taken previously - call order is important, either immediately after a corresponding previous
     # takeAction call or called in a reverse ordered sequence of multiple corresponding previous takenAction calls
     # also should be called only if previously called corresponding takeAction had returned status = True (success)
     def revertAction(self, action):
-        if action[0] is 'attach':
+        self.log("Reverting action {}".format(action[0]))
+        if action[0] == 'attach':
             self.attached = False
-        elif action[0] is 'release':
+        elif action[0] == 'release':
             self.revertRelease()
-        elif action[0] is 'move':
+        elif action[0] == 'move':
             actionStr, dx, dz, dy = action
             self.revertMove(dx, dz, dy)
         else:
             self.log('Invalid action requested to be reverted!')
         return
-
+    
     def isGoal(self, goal):
         goalXZ = (goal[0], goal[1])
         goalY = goal[2]
         goalItem = goal[3]        
         return goalXZ in self.stateMap and len(self.stateMap[goalXZ])-1 >= goalY and self.stateMap[goalXZ][goalY] is goalItem
-
+    
 def goalTest(dwsim, goal):
     return dwsim.isGoal(goal)
-
-### test
-
-#sim = DWSimulator(Xrange=(-50,50), Zrange=(-50,50), Yrange=(0,50), filename='foo.txt', loglevel='verbose')
-
-#print(sim)
-
-#sim.attach()
-#print(sim)
-#sim.release()
