@@ -1,3 +1,4 @@
+
 from itertools import product
 import numpy as np
 
@@ -26,7 +27,7 @@ class DWSimulator:
         
     def __repr__(self):
         representation = "loglevel=" + repr(self.loglevel) + " Xrange=" + repr(self.Xrange) + " Zrange=" + repr(self.Zrange) + \
-                         " Yrange= " + repr(self.Yrange) + " attached=" + repr(self.attached) + \
+                         " Yrange=" + repr(self.Yrange) + " attached=" + repr(self.attached) + \
                          " dronePos=" + repr(self.dronePos) + "\nstateMap:\n"
         for columnXZ, columnItems in self.stateMap.items(): 
             representation = representation + repr(columnXZ) + ">" + repr(columnItems) + "\n"
@@ -97,15 +98,18 @@ class DWSimulator:
         # alt drone pos by dx, dz, dy
         origDronePos = self.dronePos
         self.dronePos = (origDronePos[0]+dx, origDronePos[1]+dz, origDronePos[2]+dy)
+        if (self.dronePos[0], self.dronePos[1]) not in self.stateMap:
+            self.stateMap[(self.dronePos[0], self.dronePos[1])] = ['']*(self.Yrange[1]+1)
         self.stateMap[(self.dronePos[0], self.dronePos[1])][self.dronePos[2]] = 'd'
         self.stateMap[(origDronePos[0], origDronePos[1])][origDronePos[2]] = ''
         
         # alt attached block position if attached
         if self.attached:
-            origPos = (origDronePos[0], origDronePos[1], origDronePos-1)
+            origPos = (origDronePos[0], origDronePos[1], origDronePos[2]-1)
             newPos = (origPos[0]+dx, origPos[1]+dz, origPos[2]+dy)
-            attacheBlock = self.stateMap[(origPos[0], origPos[1])][origPos[2]]
-            
+            attachedBlock = self.stateMap[(origPos[0], origPos[1])][origPos[2]]
+            if (newPos[0], newPos[1]) not in self.stateMap:
+                self.stateMap[(newPos[0], newPos[1])] = ['']*(self.Yrange[1]+1)
             self.stateMap[(newPos[0], newPos[1])][newPos[2]] = attachedBlock
             self.stateMap[(origPos[0], origPos[1])][origPos[2]] = ''
             
@@ -120,9 +124,9 @@ class DWSimulator:
         
         # alt attached block position if attached by subtracting dx, dz, dy
         if self.attached:
-            origPos = (origDronePos[0], origDronePos[1], origDronePos-1)
+            origPos = (origDronePos[0], origDronePos[1], origDronePos[2]-1)
             newPos = (origPos[0]-dx, origPos[1]-dz, origPos[2]-dy)
-            attacheBlock = self.stateMap[(origPos[0], origPos[1])][origPos[2]]
+            attachedBlock = self.stateMap[(origPos[0], origPos[1])][origPos[2]]
             
             self.stateMap[(newPos[0], newPos[1])][newPos[2]] = attachedBlock
             self.stateMap[(origPos[0], origPos[1])][origPos[2]] = ''
@@ -147,16 +151,20 @@ class DWSimulator:
         # Now append to actions if we are allowed to make these moves
         for move in moves:
             dx, dz, dy = move
-            # first check if drone move is within drone wolrd ranges
+            # first check if drone move is within drone world ranges
             if (droneX + dx >= self.Xrange[0] and droneX + dx <= self.Xrange[1]) and \
                 (droneZ + dz >= self.Zrange[0] and droneZ + dz <= self.Zrange[1]) and \
                 (droneY + dy >= self.Yrange[0] and droneY + dy <= self.Yrange[1]) and \
-                (self.stateMap[(droneX + dx, droneZ + dz)][droneY + dy] == '') :
+                ((droneX + dx, droneZ + dz) not in self.stateMap or self.stateMap[(droneX + dx, droneZ + dz)][droneY + dy] == ''):
                 # if attached, check whether attached block (1 below drone) can also move to corresponding new position
-                if self.attached and (self.stateMap[(droneX + dx, droneZ + dz)][droneY + dy - 1] is not '') :
-                    continue                    
-                else:
-                    actions.append(('move', dx, dz, dy))
+                if self.attached:
+                    if (droneY + dy - 1 < self.Yrange[0]) or \
+                        (droneY + dy - 1 > self.Yrange[1]) or \
+                         ( ((droneX + dx, droneZ + dz) in self.stateMap) and \
+                            (self.stateMap[(droneX + dx, droneZ + dz)][droneY + dy - 1] is not '') ) :
+                        continue                    
+                
+                actions.append(('move', dx, dz, dy))
                     
         self.log("Possible actions {}".format(actions))            
         return actions

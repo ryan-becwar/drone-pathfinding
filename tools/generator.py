@@ -1,3 +1,4 @@
+
 import random as random
 
 def gen_file(filename, numBlocks=500000, maxBlocksPerColumn=50, 
@@ -49,4 +50,3 @@ def gen_file(filename, numBlocks=500000, maxBlocksPerColumn=50,
     with open(filename, 'w') as out:
         out.writelines(['{0} {1} {2} {3}\n'.format(pillar[0], pillar[1], blkIdx, blk) 
                         for pillar, blkList in stateMap.items() for blkIdx, blk in enumerate(blkList)])
-
