@@ -87,10 +87,10 @@ class DWSimulator:
             droneColumnItems = self.stateMap[droneColumnXZ]
             droneY = self.dronePos[2]
             # find where the block would have been released on column below drone  
-            relasedDestY = droneColumnItems.index('') - 1 # must be one below first empty bottoms up
+            releasedDestY = droneColumnItems.index('') - 1 # must be one below first empty bottoms up
             releasedBlock = droneColumnItems[releasedDestY]
             # now revert
-            droneColumnItems[relasedDestY] = ''
+            droneColumnItems[releasedDestY] = ''
             droneColumnItems[droneY-1] = releasedBlock            
         return
     
@@ -143,7 +143,7 @@ class DWSimulator:
         if droneY >= 1 and droneColumnItems[droneY - 1] != '' and (not self.attached) :
             actions.append(('attach',))
         # Now find possible releases
-        if droneY >= 1 and '' in droneColumnItems[:droneY - 1]:
+        if droneY >= 1 and '' in droneColumnItems[:droneY - 1] and (self.attached):
             actions.append(('release',))
         
         # Finally find possible moves (in ideal world there are 27 such moves involving cartesian products of {-1}, {0}, {1})
