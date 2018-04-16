@@ -34,6 +34,9 @@ def plot(sim):
     ax.set_xlim(0, 110)
     ax.set_ylim(0, 110)
     ax.set_zlim(0, 50)
+    ax.set_yticklabels([])
+    ax.set_xticklabels([])
+    ax.set_zticklabels([])
     for x in range(len(sim.map)):
         for z in range(len(sim.map[x])):
             for y in range(len(sim.map[x][z])):
