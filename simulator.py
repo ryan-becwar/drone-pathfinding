@@ -11,13 +11,15 @@ class Simulator:
     def __init__(self, state):
         self.map = state[0]
         self.attached = state[1]
-        self.currentStateMap = state[2]
+        #self.currentStateMap = state[2]
         self.drone_pos = self.find_drone()
 
     @classmethod
     def from_file(cls, filename):
-        map, stateMap = cls.initialize(filename)
-        obj = cls((map, False, stateMap))
+        #map, stateMap = cls.initialize(filename)
+        #obj = cls((map, False, stateMap))
+        map = cls.initialize(filename)
+        obj = cls((map, False))
         return obj
 
     def __hash__(self):
@@ -33,17 +35,18 @@ class Simulator:
     #TODO: check if configuration is valid, no floating blocks
     def initialize(filename):
         map = [[[" " for y in range(HEIGHT)] for z in range(LENGTH)] for x in range(WIDTH)]
-        currentStateMap = {}
+        #currentStateMap = {}
         
         with open(filename, 'r') as file_in:
             for line in file_in.readlines():
                 data = line.split()
                 x, z, y, item = (int(data[0]), int(data[1]), int(data[2]), data[3])
                 map[x][z][y] = item
-                if (int(data[0]), int(data[1])) not in currentStateMap:
-                    currentStateMap[(int(data[0]), int(data[1]))] = [' ' for i in range(HEIGHT)]
-                currentStateMap[(int(data[0]), int(data[1]))][int(data[2])] = data[3]
-        return (map, currentStateMap)
+                #if (int(data[0]), int(data[1])) not in currentStateMap:
+                #    currentStateMap[(int(data[0]), int(data[1]))] = [' ' for i in range(HEIGHT)]
+                #currentStateMap[(int(data[0]), int(data[1]))][int(data[2])] = data[3]
+        #return (map, currentStateMap)
+        return map
 
 
     def writeout(self, filename):
@@ -51,7 +54,8 @@ class Simulator:
             out.writelines(['{0} {1} {2} {3}\n'.format(item[0], item[1], item[2], item[3]) for item in self.to_list()])
 
     def state(self):
-         return (self.map, self.attached, self.currentStateMap)
+         #return (self.map, self.attached, self.currentStateMap)
+         return (self.map, self.attached)
 
     def attach(self):
         if self.attached:
@@ -81,14 +85,15 @@ class Simulator:
             return self.to_list()
         below = self.map[x1][z1][:y1] #list of all blocks below destination
         if 'd' in below or ' ' in below:
-            print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below, self.currentStateMap)
+            #print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below, self.currentStateMap)
+            print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below)
             return self.to_list()
 
         #update blocks in statemap
-        self.currentStateMap[(x0,z0)][y0] = ' '
-        if (x1,z1) not in self.currentStateMap:
-            self.currentStateMap[(x1,z1)]=[' ' for i in range(HEIGHT)]
-        self.currentStateMap[(x1,z1)][y1] = self.map[x0][z0][y0]
+        #self.currentStateMap[(x0,z0)][y0] = ' '
+        #if (x1,z1) not in self.currentStateMap:
+        #    self.currentStateMap[(x1,z1)]=[' ' for i in range(HEIGHT)]
+        #self.currentStateMap[(x1,z1)][y1] = self.map[x0][z0][y0]
 
         #update in map
         self.map[x1][z1][y1] = self.map[x0][z0][y0]
@@ -115,10 +120,10 @@ class Simulator:
             #swap drone first if moving up
             if(dy >= 0):
                 #drone swap
-                self.currentStateMap[(x,z)][y] = ' '
-                if (xn,zn) not in self.currentStateMap:
-                    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
-                self.currentStateMap[(xn,zn)][yn] = self.map[x][z][y]
+                #self.currentStateMap[(x,z)][y] = ' '
+                #if (xn,zn) not in self.currentStateMap:
+                #    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+                #self.currentStateMap[(xn,zn)][yn] = self.map[x][z][y]
 
                 #swap drone position
                 self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y]
@@ -129,10 +134,10 @@ class Simulator:
                 if(self.attached):
                     #block swap
                     # update currentStateMap first before block swap
-                    self.currentStateMap[(x,z)][y-1] = ' '
-                    if (xn,zn) not in self.currentStateMap:
-                        self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
-                    self.currentStateMap[(xn,zn)][yn-1] = self.map[x][z][y-1]
+                    #self.currentStateMap[(x,z)][y-1] = ' '
+                    #if (xn,zn) not in self.currentStateMap:
+                    #    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+                    #self.currentStateMap[(xn,zn)][yn-1] = self.map[x][z][y-1]
                     
                     #swap block below                    
                     self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] 
@@ -140,19 +145,19 @@ class Simulator:
                 if(self.attached):
                     #block swap
                     # update currentStateMap first before block swap
-                    self.currentStateMap[(x,z)][y-1] = ' '
-                    if (xn,zn) not in self.currentStateMap:
-                        self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
-                    self.currentStateMap[(xn,zn)][yn-1] = self.map[x][z][y-1]
+                    #self.currentStateMap[(x,z)][y-1] = ' '
+                    #if (xn,zn) not in self.currentStateMap:
+                    #    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+                    #self.currentStateMap[(xn,zn)][yn-1] = self.map[x][z][y-1]
                     
                     #swap block below                    
                     self.map[x][z][y-1], self.map[xn][zn][yn-1] = self.map[xn][zn][yn-1], self.map[x][z][y-1] 
 
                 #drone swap
-                self.currentStateMap[(x,z)][y] = ' '
-                if (xn,zn) not in self.currentStateMap:
-                    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
-                self.currentStateMap[(xn,zn)][yn] = self.map[x][z][y]
+                #self.currentStateMap[(x,z)][y] = ' '
+                #if (xn,zn) not in self.currentStateMap:
+                #    self.currentStateMap[(xn,zn)]=[' ' for i in range(HEIGHT)]
+                #self.currentStateMap[(xn,zn)][yn] = self.map[x][z][y]
 
                 #swap drone position
                 self.map[x][z][y], self.map[xn][zn][yn] = self.map[xn][zn][yn], self.map[x][z][y]
@@ -177,9 +182,9 @@ class Simulator:
             
         if " " in below:
             drop = below.index(" ")
-            # update currentStateMap first before swap due to release
-            self.currentStateMap[(x,z)][drop] = self.map[x][z][y-1]
-            self.currentStateMap[(x,z)][y-1] = ' '
+            ## update currentStateMap first before swap due to release
+            #self.currentStateMap[(x,z)][drop] = self.map[x][z][y-1]
+            #self.currentStateMap[(x,z)][y-1] = ' '
 
             self.map[x][z][y-1], self.map[x][z][drop] = self.map[x][z][drop], self.map[x][z][y-1] 
         

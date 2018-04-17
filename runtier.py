@@ -45,7 +45,6 @@ print("Path length: ", len(dronePath) + 2 * (len(result)-1))
 print()
 print("RESULT: ")
 for sim in result:
-    print(sim[0].currentStateMap)
     print(sim[0].to_list())
     print(sim[1])
     print()
@@ -53,4 +52,4 @@ for sim in result:
 
 print("\nDRONE RESULT: ")
 for sim in dronePath:
-    print(sim.currentStateMap)
+    print(sim.to_list())
