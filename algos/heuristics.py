@@ -1,4 +1,5 @@
 import numpy as np
+import random
 
 
 def where_does_my_block_want_to_move(sim, block_goals):
@@ -7,20 +8,22 @@ def where_does_my_block_want_to_move(sim, block_goals):
     blocks_with_score = []
     
     for block in top_level_blocks:
-        blocks_underneath = []
+        blocks_underneath = sim.map[block[0]][block[1] + sim.pillar_height(block[0], block[2]) - 1][block[2]]
         score = 0
+        move = None
         
         move_out_of_way = False
         
         for block_underneath in blocks_underneath:
             if block_underneath in block_goals:
                 move_out_of_way = True
+                score = 1
         
         if goal is None:
             for possible_goal in block_goals:
                 ex = examine_goal(sim, block_goals, possible_goal)
                 if ex:
-                    return possible_goal
+                    score = 1
         
         block_under_goal = sim.map[goal[0]][goal[1]-1][goal[2]]
         is_block = block_under_goal != None
@@ -28,13 +31,20 @@ def where_does_my_block_want_to_move(sim, block_goals):
         if is_block:
             ex = examine_goal(sim, block_goals, goal)
             if not ex:
-                return False
+                score = 2
+                
+        if score > 0:
+            if score > max_score:
+                max_score = score
+                blocks_with_score = [move]
+            if score == max_score:
+                blocks_with_score.append(move)
             
-    move = blocks_with_score[0]
+    move = random.choice(blocks_with_score)
     sim.perform_move(move)
             
 def examine_goal(sim, block_goals, goal):
-    blocks_under_goal = []
+    blocks_under_goal = sim.map[goal[0]][goal[1] + sim.pillar_height(goal[0], goal[2]) - 1][goal[2]]
     
     goal_under_goal = False
     for block_under in blocks_under_goal:

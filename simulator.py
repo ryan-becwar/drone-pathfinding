@@ -246,11 +246,9 @@ class Simulator:
     def space_taken(self, x, z, y):
         return y == -1 or (self.map[x][z][y] != " " and self.map[x][z][y] != "d")
     def pillar_height(self, x, z):
-        for x in range(len(self.map)):
-            for z in range(len(self.map[x])):
-                for y in range(len(self.map[x][z])):
-                    if space_empty(x, z, y):
-                        return y
+        for y in range(len(self.map[x][z])):
+            if space_empty(x, z, y):
+                return y
 
     #returns the state as a list of objects
     def to_list(self):
