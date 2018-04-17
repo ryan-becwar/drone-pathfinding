@@ -9,17 +9,20 @@ def where_does_my_block_want_to_move(sim, block_goals, block, goal):
     for block_underneath in blocks_underneath:
         if block_underneath in block_goals:
             move_out_of_way = True
-            
+    
+    if goal is None:
+        for possible_goal in block_goals:
+            ex = examine_goal(sim, block_goals, possible_goal)
+            if ex:
+                return possible_goal
+    
     block_under_goal = sim.map[goal[0]][goal[1]-1][goal[2]]
     is_block = block_under_goal != None
     
     if is_block:
-        if examine_goal(sim, block_goals, goal):
+        ex = examine_goal(sim, block_goals, goal)
+        if not ex:
             return False
-    
-    if goal is None:
-        for possible_goal in block_goals:
-            examine_goal(sim, block_goals, possible_goal)
             
 def examine_goal(sim, block_goals, goal):
     blocks_under_goal = []
@@ -44,7 +47,7 @@ def distance_heuristic(goal, sim):
             if dist < mindist:
                 mindist = dist
                 minblock = block
-
+    
     dronedist = euclidean(minblock, sim.drone_pos)
 
 
