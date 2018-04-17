@@ -1,28 +1,37 @@
 import numpy as np
 
 
-def where_does_my_block_want_to_move(sim, block_goals, block, goal):
-    blocks_underneath = []
+def where_does_my_block_want_to_move(sim, block_goals):
+    top_level_blocks = sim.top_level_blocks()
+    max_score = 0
+    blocks_with_score = []
     
-    move_out_of_way = False
-    
-    for block_underneath in blocks_underneath:
-        if block_underneath in block_goals:
-            move_out_of_way = True
-    
-    if goal is None:
-        for possible_goal in block_goals:
-            ex = examine_goal(sim, block_goals, possible_goal)
-            if ex:
-                return possible_goal
-    
-    block_under_goal = sim.map[goal[0]][goal[1]-1][goal[2]]
-    is_block = block_under_goal != None
-    
-    if is_block:
-        ex = examine_goal(sim, block_goals, goal)
-        if not ex:
-            return False
+    for block in top_level_blocks:
+        blocks_underneath = []
+        score = 0
+        
+        move_out_of_way = False
+        
+        for block_underneath in blocks_underneath:
+            if block_underneath in block_goals:
+                move_out_of_way = True
+        
+        if goal is None:
+            for possible_goal in block_goals:
+                ex = examine_goal(sim, block_goals, possible_goal)
+                if ex:
+                    return possible_goal
+        
+        block_under_goal = sim.map[goal[0]][goal[1]-1][goal[2]]
+        is_block = block_under_goal != None
+        
+        if is_block:
+            ex = examine_goal(sim, block_goals, goal)
+            if not ex:
+                return False
+            
+    move = blocks_with_score[0]
+    sim.perform_move(move)
             
 def examine_goal(sim, block_goals, goal):
     blocks_under_goal = []
