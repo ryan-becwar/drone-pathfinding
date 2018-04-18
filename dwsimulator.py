@@ -1,9 +1,10 @@
 
 from itertools import product
 import numpy as np
+import copy as copy
 
 def euclidean(source, dest):
-    return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
+    return (source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])
 
 class DWSimulator: 
     # loglevel can be 'verbose' or 'silent'
@@ -22,7 +23,7 @@ class DWSimulator:
                 if (x, z) not in self.stateMap:
                     self.stateMap[(x, z)] = ['']*(self.Yrange[1]+1)
                 self.stateMap[(x, z)][y] = item
-                if item == 'd' or item == 'drone':
+                if item == 'd':
                     self.dronePos = (x, z, y)        
         
     def __repr__(self):
@@ -30,7 +31,9 @@ class DWSimulator:
                          " Yrange=" + repr(self.Yrange) + " attached=" + repr(self.attached) + \
                          " dronePos=" + repr(self.dronePos) + "\nstateMap:\n"
         for columnXZ, columnItems in self.stateMap.items(): 
-            representation = representation + repr(columnXZ) + ">" + repr(columnItems) + "\n"
+            countNonEmptyItems = sum(1 for i in columnItems if i != '')
+            if  countNonEmptyItems > 0:
+                representation = representation + repr(columnXZ) + ">" + repr(columnItems) + "\n"
             
         return representation
     
@@ -87,10 +90,10 @@ class DWSimulator:
             droneColumnItems = self.stateMap[droneColumnXZ]
             droneY = self.dronePos[2]
             # find where the block would have been released on column below drone  
-            releasedDestY = droneColumnItems.index('') - 1 # must be one below first empty bottoms up
+            relasedDestY = droneColumnItems.index('') - 1 # must be one below first empty bottoms up
             releasedBlock = droneColumnItems[releasedDestY]
             # now revert
-            droneColumnItems[releasedDestY] = ''
+            droneColumnItems[relasedDestY] = ''
             droneColumnItems[droneY-1] = releasedBlock            
         return
     
@@ -143,7 +146,7 @@ class DWSimulator:
         if droneY >= 1 and droneColumnItems[droneY - 1] != '' and (not self.attached) :
             actions.append(('attach',))
         # Now find possible releases
-        if droneY >= 1 and '' in droneColumnItems[:droneY - 1] and (self.attached):
+        if droneY >= 1 and '' in droneColumnItems[:droneY - 1] and self.attached:
             actions.append(('release',))
         
         # Finally find possible moves (in ideal world there are 27 such moves involving cartesian products of {-1}, {0}, {1})
@@ -169,11 +172,15 @@ class DWSimulator:
         self.log("Possible actions {}".format(actions))            
         return actions
     
+    def takeActionImmutable(self, action):
+        resultingDWSim = copy.deepcopy(self)
+        (actionStatus, stepCost) = resultingDWSim.takeAction(action)
+        return (actionStatus, stepCost, resultingDWSim)
+        
     # assumes a valid action returned by possibleActions
     def takeAction(self, action):
         # returns a tuple of True/False depending on success/failure status of action and step cost.
-        # step cost is euclidean for move, 1 for release/attach
-       
+        # step cost is euclidean for move, 1 for release/attach       
         status = False
         stepCost = -1.0
         self.log("Taking action {}".format(action))
@@ -212,13 +219,14 @@ class DWSimulator:
         goalY = goal[2]
         goalItem = goal[3]        
         return goalXZ in self.stateMap and len(self.stateMap[goalXZ])-1 >= goalY and self.stateMap[goalXZ][goalY] is goalItem
-
+    
     def possibleGoals(self, goal):
         goalXs = range(self.Xrange[0], self.Xrange[1]+1) if goal[0] == '?' else range(goal[0], goal[0]+1)
         goalZs = range(self.Zrange[0], self.Zrange[1]+1) if goal[1] == '?' else range(goal[1], goal[1]+1)
         goalYs = range(self.Yrange[0], self.Yrange[1]+1) if goal[2] == '?' else range(goal[2], goal[2]+1)
         goalItem = goal[3]
         return([(x, z, y, goalItem) for x in goalXs for z in goalZs for y in goalYs])
+
     
 def goalTest(dwsim, goal):
     return dwsim.isGoal(goal)
