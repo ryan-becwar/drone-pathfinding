@@ -67,7 +67,7 @@ def aStarSearchImmutablehHelper(parentNode, hF, goal, fmax):
         if result is not "failure":               
             result.insert(0, parentNode.state)     
             return (result, bestChild.f)      
-    return ("failure", float('inf'))                                             
+    #return ("failure", float('inf'))                                             
 
 
 def aStarSearch(startState, hF, goal, maxAttempts=50):    
@@ -138,7 +138,7 @@ def aStarSearchHelper(parentNode, hF, goal, fmax):
             return (result, bestChild.f)
         else:
             parentNode.state.revertAction(bestAction)
-    return ("failure", float('inf'))                                             
+    #return ("failure", float('inf'))                                             
 
 
 def rbfsAStar(startState, hF, goal):
@@ -184,3 +184,11 @@ def rbfsAStar(startState, hF, goal):
     
     result, bestf = RBFS(node, hF, goal, float('inf'))
     return result
+
+
+## test
+#from heuristics import *
+#from astar import *
+#result = aStarSearchImmutable(simProf, costHeuristicFunc, (0,0,2,'r'))
+
+#result = aStarSearch(simProf, costHeuristicFunc, (0,0,2,'r'))
