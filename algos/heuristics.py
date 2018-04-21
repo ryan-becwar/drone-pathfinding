@@ -12,17 +12,17 @@ def where_does_my_block_want_to_move(sim, block_goals):
         score = 0
         move = None
         
-        move_out_of_way = False
         
         for block_underneath in blocks_underneath:
             if block_underneath in block_goals:
-                move_out_of_way = True
+                move = block[0], block[1], block[2], 0, 0, 0
                 score = 1
         
         if goal is None:
             for possible_goal in block_goals:
                 ex = examine_goal(sim, block_goals, possible_goal)
                 if ex:
+                    move = block[0], block[1], block[2], possible_goal[0], possible_goal[1], possible_goal[2]
                     score = 1
         
         block_under_goal = sim.map[goal[0]][goal[1]-1][goal[2]]
@@ -31,7 +31,8 @@ def where_does_my_block_want_to_move(sim, block_goals):
         if is_block:
             ex = examine_goal(sim, block_goals, goal)
             if not ex:
-                score = 2
+                move = block[0], block[1], block[2], goal[0], goal[1], goal[2]
+                score = 3
                 
         if score > 0:
             if score > max_score:
