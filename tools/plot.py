@@ -5,6 +5,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d.art3d import Poly3DCollection
 import numpy as np
 from itertools import product, combinations
+from simulator import *
 
 def __plot_cube_at(loc, size):
     r = size/2
@@ -31,9 +32,9 @@ def __plot_cube_at(loc, size):
 def plot(sim):
     fig = plt.figure()
     ax = Axes3D(fig)
-    ax.set_xlim(0, 110)
-    ax.set_ylim(0, 110)
-    ax.set_zlim(0, 50)
+    ax.set_xlim(0, WIDTH * 10)
+    ax.set_ylim(0, LENGTH * 10)
+    ax.set_zlim(0, HEIGHT * 10)
     ax.set_yticklabels([])
     ax.set_xticklabels([])
     ax.set_zticklabels([])

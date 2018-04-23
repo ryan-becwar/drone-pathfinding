@@ -2,7 +2,7 @@ from copy import deepcopy
 import numpy as np
 WIDTH = 11 #x dimension
 LENGTH = 11 #z dimension
-HEIGHT = 6 #y dimension (vertical)
+HEIGHT = 20 #y dimension (vertical)
 
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
@@ -85,10 +85,10 @@ class Simulator:
             print("Ending position not empty", endpos)
             return self.to_list()
         below = self.map[x1][z1][:y1] #list of all blocks below destination
-        if 'd' in below or ' ' in below:
+        #if 'd' in below or ' ' in below:
             #print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below, self.currentStateMap)
-            print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below)
-            return self.to_list()
+            #print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below)
+            #return self.to_list()
 
         #update blocks in statemap
         #self.currentStateMap[(x0,z0)][y0] = ' '
@@ -248,7 +248,7 @@ class Simulator:
         return y == -1 or (self.map[x][z][y] != " " and self.map[x][z][y] != "d")
     def pillar_height(self, x, z):
         for y in range(len(self.map[x][z])):
-            if space_empty(x, z, y):
+            if self.space_empty(x, z, y):
                 return y
 
     #returns the state as a list of objects
