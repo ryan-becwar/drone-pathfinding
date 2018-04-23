@@ -10,7 +10,8 @@ def testF(possible_commandsF):
     print(possible_commandsF())
 
 #sim = Simulator.from_file("gamestates/reversestack")
-sim = Simulator.from_file("gamestates/draper/state1")
+sim = Simulator.from_file("gamestates/draper/state3")
+#goals = [(0, 1, 0, 'black'), (0, 1, 15, 'red')]
 
 plt.plot(sim)
 
@@ -23,7 +24,9 @@ plt.plot(sim)
 #case 3
 #goal = (5,3,4,'red')
 
-goals = [(0, 1, 0, 'black'), (0, 1, 15, 'red')]
+
+
+goals = [('?', '?', 0, '?'), ('?', '?', 1, '?'), ('?', '?', 2, '?'), ('?', '?', 3, '?'), ('?', '?', 4, '?'), ('?', '?', 5, '?'), ('?', '?', 6, '?'), ('?', '?', 7, '?'), ('?', '?', 8, '?'), ('?', '?', 9, '?'), ('?', '?', 10, '?'), ('?', '?', 11, '?'), ('?', '?', 12, '?'), ('?', '?', 13, '?'), ('?', '?', 14, '?'), ('?', '?', 15, '?'), ('?', '?', 16, '?'), ]
 
 
 block_goals = assign.assignGoals(sim, goals)
