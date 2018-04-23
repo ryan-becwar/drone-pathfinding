@@ -2,7 +2,7 @@ from copy import deepcopy
 import numpy as np
 WIDTH = 11 #x dimension
 LENGTH = 11 #z dimension
-HEIGHT = 6 #y dimension (vertical)
+HEIGHT = 20 #y dimension (vertical)
 
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)

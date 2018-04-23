@@ -10,7 +10,7 @@ def testF(possible_commandsF):
     print(possible_commandsF())
 
 #sim = Simulator.from_file("gamestates/reversestack")
-sim = Simulator.from_file("gamestates/simple")
+sim = Simulator.from_file("gamestates/draper/state1")
 
 plt.plot(sim)
 
@@ -21,9 +21,12 @@ plt.plot(sim)
 #goal = (3,3,2,'red')
 
 #case 3
-goal = (5,3,4,'red')
+#goal = (5,3,4,'red')
 
-block_goals = assign.assignGoals(sim, [goal])
+goals = [(0, 1, 0, 'black'), (0, 1, 15, 'red')]
+
+
+block_goals = assign.assignGoals(sim, goals)
 res = where_does_my_block_want_to_move(sim, block_goals)
 
 start_time = time.time()
