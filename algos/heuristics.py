@@ -1,48 +1,83 @@
 import numpy as np
 import random
+import tools.plot as plt
 
 
 def where_does_my_block_want_to_move(sim, block_goals):
-    top_level_blocks = sim.top_level_blocks()
-    max_score = 0
-    blocks_with_score = []
     
-    for block in top_level_blocks:
-        blocks_underneath = sim.map[block[0]][block[1] + sim.pillar_height(block[0], block[2]) - 1][block[2]]
-        score = 0
-        move = None
+    while True:
         
-        
-        for block_underneath in blocks_underneath:
-            if block_underneath in block_goals:
-                move = block[0], block[1], block[2], 0, 0, 0
-                score = 1
-        
-        if goal is None:
-            for possible_goal in block_goals:
-                ex = examine_goal(sim, block_goals, possible_goal)
-                if ex:
-                    move = block[0], block[1], block[2], possible_goal[0], possible_goal[1], possible_goal[2]
-                    score = 1
-        
-        block_under_goal = sim.map[goal[0]][goal[1]-1][goal[2]]
-        is_block = block_under_goal != None
-        
-        if is_block:
-            ex = examine_goal(sim, block_goals, goal)
-            if not ex:
-                move = block[0], block[1], block[2], goal[0], goal[1], goal[2]
-                score = 3
-                
-        if score > 0:
-            if score > max_score:
-                max_score = score
-                blocks_with_score = [move]
-            if score == max_score:
-                blocks_with_score.append(move)
+        top_level_blocks = sim.top_level_blocks()
+        max_score = 0
+        blocks_with_score = []
+    
+        for block in top_level_blocks:
+            blocks_underneath = [(block[0], block[1], y, sim.map[block[0]][block[1]][y]) for y in range(block[2] + 1)]
+            score = 0
+            move = None
+            goal = block_goals[block] if block in block_goals else None
             
-    move = random.choice(blocks_with_score)
-    sim.perform_move(move)
+            #  Move out of the way for blocks underneath
+            for block_underneath in blocks_underneath:
+                if block_underneath in block_goals:
+                    move = block, (0, 0, 0)
+                    score = 1
+            
+            if goal is None:
+                #  Build a pillar to a goal
+                for block_goal in block_goals:
+                    possible_goal = block_goals[block_goal]
+                    if possible_goal[0] == block[0] and possible_goal[1] == block[1]:
+                        continue
+                    
+                    blocks_underneath_goal = [(possible_goal[0], possible_goal[1], y, sim.map[possible_goal[0]][possible_goal[1]][y]) for y in range(possible_goal[2]) if sim.space_taken(possible_goal[0], possible_goal[1], y)]
+                    
+                    has_goal = False
+                    for bl in blocks_underneath_goal:
+                        if bl in block_goals:
+                            has_goal = True
+                    
+                    if has_goal:
+                        continue
+                    
+                    #ex = examine_goal(sim, block_goals, possible_goal)
+                    #if ex:
+                    pillar = sim.pillar_height(possible_goal[0], possible_goal[1])
+                    
+                    if pillar <= possible_goal[1]:
+                        move = block, (possible_goal[0], possible_goal[1], pillar)
+                        score = 2
+            
+            else:
+                #  Move into the final goal position
+                is_block = sim.space_taken(goal[0], goal[1], goal[2] - 1)
+                print("Block", is_block, goal, "'", sim.map[goal[0]][goal[1]], "'")
+                if is_block:
+                    #ex = examine_goal(sim, block_goals, goal)
+                    #if not ex:
+                     move = block, (goal[0], goal[1], goal[2])
+                     score = 3
+                    
+            if score > 0:
+                if score > max_score:
+                    max_score = score
+                    blocks_with_score = [move]
+                if score == max_score:
+                    blocks_with_score.append(move)
+                
+        
+        move = random.choice(blocks_with_score)
+        print(max_score)
+        print(move)
+        if move[0] in block_goals:
+            goal = block_goals[move[0]]
+            del block_goals[move[0]]
+            block_goals[(move[1][0], move[1][1], move[1][2], move[0][3])] = goal
+            print(block_goals)
+        sim.take_block_action(move)
+        #sim.map[move[1][0]][move[1][2]][move[1][1]] = 'black'
+        plt.plot(sim)
+    
             
 def examine_goal(sim, block_goals, goal):
     blocks_under_goal = sim.map[goal[0]][goal[1] + sim.pillar_height(goal[0], goal[2]) - 1][goal[2]]
