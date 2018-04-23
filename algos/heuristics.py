@@ -157,6 +157,10 @@ def find(f, currentStateList):
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
 
+def euclidean_sim(goal, sim):
+    gx,gz,gy,_ = goal
+    return euclidean((gx,gz,gy), sim.drone_pos)
+
 def chebyshev(source, dest):
     return max(abs(source[0] - dest[0]), abs(source[1] - dest[1]), abs(source[2] - dest[2]))
 
