@@ -262,8 +262,9 @@ class Simulator:
     #return a list of positions on the map that a block could be placed, ignoring the position that block is already
     def top_level_positions(self, ignore):
         #return [(x, z, y) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if (x, z) != ignore and self.space_empty(x, z, y) and self.space_taken(x, z, y - 1)]
+        stack_poss = [(4,4),(4,3),(3,2),(2,3),(2,2)]
         return [(x,z,next(y for y in range(len(self.map[x][z])) if self.space_empty(x,z,y))) for x in range(len(self.map)) for z in range(len(self.map[x])) if (x, z) != ignore] #does not iterate over every y
-        return [(x,z,next(y for y in range(len(self.map[x][z])) if self.space_empty(x,z,y))) for x in range(len(self.map)) for z in range(len(self.map[x])) if ((x, z) != ignore and (self.space_taken(x,z,0) or (x,z) == self.stack_pos))] #does not iterate over every y
+        #return [(x,z,next(y for y in range(len(self.map[x][z])) if self.space_empty(x,z,y))) for x in range(len(self.map)) for z in range(len(self.map[x])) if ((x, z) != ignore and (self.space_taken(x,z,0) or (x,z) in stack_poss))] #does not iterate over every y
 
     def possible_block_moves(self):
         actions = []
