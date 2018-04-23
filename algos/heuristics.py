@@ -7,6 +7,15 @@ def where_does_my_block_want_to_move(sim, block_goals):
     
     while True:
         
+        finished = True
+        for block_goal in block_goals:
+            possible_goal = block_goals[block_goal]
+            if not goal_complete(sim, possible_goal):
+                print("Goal not finished", possible_goal)
+                finished = False
+        if finished:
+            break
+        
         top_level_blocks = sim.top_level_blocks()
         max_score = 0
         blocks_with_score = []
@@ -18,45 +27,58 @@ def where_does_my_block_want_to_move(sim, block_goals):
             goal = block_goals[block] if block in block_goals else None
             
             if goal is not None:
-                if block[0] != goal[0] or block[1] != goal[1] or block[2] != goal[2]:
+                if not goal_block_complete(block, goal):
                     #  Move into the final goal position
-                    is_block = sim.space_taken(goal[0], goal[1], goal[2] - 1)
-                    if is_block:
-                        #ex = examine_goal(sim, block_goals, goal)
-                        #if not ex:
-                         move = block, (goal[0], goal[1], goal[2])
-                         score = 3
+                    for gx in range(0 if goal[0] == '?' else goal[0], 11 if goal[0] == '?' else goal[0] + 1):
+                        for gz in range(0 if goal[1] == '?' else goal[1], 11 if goal[1] == '?' else goal[1] + 1):
+                            pillar = sim.pillar_height(gx, gz)
+                            is_block = goal[2] == '?' or pillar == goal[2]
+                            
+                            blocks_underneath_goal = [(gx, gz, y, sim.map[gx][gz][y]) for y in range(pillar) if sim.space_taken(gx, gz, y)]
+                            has_goal = False
+                            for bl in blocks_underneath_goal:
+                                if bl in block_goals:
+                                    blg = block_goals[bl]
+                                    if not goal_block_complete(bl, blg):
+                                        has_goal = True
+                            
+                            if is_block and not has_goal:
+                                #ex = examine_goal(sim, block_goals, goal)
+                                #if not ex:
+                                move = block, (gx, gz, pillar)
+                                score = 3
             
             if score == 0 and max_score <= 2 and goal is None:
                 #  Build a pillar to a goal
                 for block_goal in block_goals:
                     possible_goal = block_goals[block_goal]
-                    if possible_goal[0] == block[0] and possible_goal[1] == block[1]:
-                        continue
-                    if block_goal[0] == possible_goal[0] and block_goal[1] == possible_goal[1] and block_goal[2] == possible_goal[2]:
+                    if goal_block_complete(block_goal, possible_goal):
                         continue
                     
-                    blocks_underneath_goal = [(possible_goal[0], possible_goal[1], y, sim.map[possible_goal[0]][possible_goal[1]][y]) for y in range(possible_goal[2]) if sim.space_taken(possible_goal[0], possible_goal[1], y)]
-                    print("Underneath: ", blocks_underneath_goal)
-                    
-                    has_goal = False
-                    for bl in blocks_underneath_goal:
-                        if bl in block_goals:
-                            blg = block_goals[bl]
-                            if blg[0] != bl[0] or blg[1] != bl[1] or blg[2] != bl[2]:
-                                print("Block Goal: ", bl, blg)
-                                has_goal = True
-                    
-                    if has_goal:
-                        continue
-                    
-                    #ex = examine_goal(sim, block_goals, possible_goal)
-                    #if ex:
-                    pillar = sim.pillar_height(possible_goal[0], possible_goal[1])
-                    
-                    if pillar < possible_goal[2]:
-                        move = block, (possible_goal[0], possible_goal[1], pillar)
-                        score = 2
+                    for gx in range(0 if possible_goal[0] == '?' else possible_goal[0], 11 if possible_goal[0] == '?' else possible_goal[0] + 1):
+                        for gz in range(0 if possible_goal[1] == '?' else possible_goal[1], 11 if possible_goal[1] == '?' else possible_goal[1] + 1):
+                            if gx == block[0] and gz == block[1]:
+                                continue
+                            
+                            pillar = sim.pillar_height(gx, gz)
+                            blocks_underneath_goal = [(gx, gz, y, sim.map[gx][gz][y]) for y in range(pillar) if sim.space_taken(gx, gz, y)]
+                            
+                            has_goal = False
+                            for bl in blocks_underneath_goal:
+                                if bl in block_goals:
+                                    blg = block_goals[bl]
+                                    if not goal_block_complete(bl, blg):
+                                        has_goal = True
+                            
+                            if has_goal:
+                                continue
+                            
+                            #ex = examine_goal(sim, block_goals, possible_goal)
+                            #if ex:
+                            
+                            if pillar < possible_goal[2]:
+                                move = block, (gx, gz, pillar)
+                                score = 2
             
             if score == 0 and max_score <= 1:
                 #  Move out of the way for blocks underneath
@@ -81,10 +103,28 @@ def where_does_my_block_want_to_move(sim, block_goals):
             goal = block_goals[move[0]]
             del block_goals[move[0]]
             block_goals[(move[1][0], move[1][1], move[1][2], move[0][3])] = goal
-            print(block_goals)
         sim.take_block_action(move)
         #sim.map[move[1][0]][move[1][2]][move[1][1]] = 'black'
         plt.plot(sim)
+
+
+def goal_block_complete(block, goal):
+    if goal[0] != '?' and goal[0] != block[0]:
+        return False
+    if goal[1] != '?' and goal[1] != block[1]:
+        return False
+    if goal[2] != '?' and goal[2] != block[2]:
+        return False
+    return True
+def goal_complete(sim, goal):
+    goal_map = sim.map
+    for x in sim.map[(0 if goal[0] == '?' else goal[0]) : (-1 if goal[0] == '?' else goal[0] + 1)]:
+        for z in x[(0 if goal[1] == '?' else goal[1]) : (-1 if goal[1] == '?' else goal[1] + 1)]:
+            for y in z[(0 if goal[2] == '?' else goal[2]) : (-1 if goal[2] == '?' else goal[2] + 1)]:
+                if y == goal[3] or (y != ' ' and y != 'd' and goal[3] == '?'):
+                    return True
+    return False
+    
     
             
 def examine_goal(sim, block_goals, goal):
