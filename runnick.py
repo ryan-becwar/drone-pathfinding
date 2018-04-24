@@ -10,11 +10,11 @@ def testF(possible_commandsF):
     print(possible_commandsF())
 
 #sim = Simulator.from_file("gamestates/reversestack")  #min parameters(w,l,h)
-#sim = Simulator.from_file("gamestates/draper/state1") #(?,?,?)
+sim = Simulator.from_file("gamestates/draper/state1") #(?,?,?)
 #sim = Simulator.from_file("gamestates/draper/state2") #(101,101,3)
-sim = Simulator.from_file("gamestates/draper/state3") #(11,11,18)
+#sim = Simulator.from_file("gamestates/draper/state3") #(11,11,18)
 
-plt.plot(sim)
+#plt.plot(sim)
 
 #case 1
 #goal = (3,3,0,'red')
@@ -33,22 +33,10 @@ goals3 = [('?', '?', 0, '?'), ('?', '?', 1, '?'), ('?', '?', 2, '?'), ('?', '?',
 
 start_time = time.time()
 
-#block_goals = assign.assignGoals(sim, goals1)
+block_goals = assign.assignGoals(sim, goals1)
 #block_goals = assign.assignGoals(sim, goals2)
-block_goals = assign.assignGoals(sim, goals3)
+#block_goals = assign.assignGoals(sim, goals3)
 res = where_does_my_block_want_to_move(sim, block_goals)
 
 print()
 print("Time elapsed", time.time() - start_time)
-print("Path length: ", len(dronePath) + 2 * (len(result)-1))
-print()
-print("RESULT: ")
-for sim in result:
-    print(sim[0].to_list())
-    print(sim[1])
-    print()
-
-
-print("\nDRONE RESULT: ")
-for sim in dronePath:
-    print(sim.to_list())
