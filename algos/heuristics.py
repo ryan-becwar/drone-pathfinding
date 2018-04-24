@@ -105,25 +105,25 @@ def where_does_my_block_want_to_move(sim, block_goals):
             goal = block_goals[move[0]]
             del block_goals[move[0]]
             block_goals[(move[1][0], move[1][1], move[1][2], move[0][3])] = goal
-        #sim.take_block_action(move)
-        pathToBlock = a.aStar(sim,(move[0][0], move[0][1], move[0][2]+1, 'd'), euclidean_sim)
-        drone_moves += len(pathToBlock) #one too many, without subtracting accounts for attach
-        sim = pathToBlock[0]
-        #for step in pathToBlock:
-        #    print(step.to_list())
+        sim.take_block_action(move)
+        #pathToBlock = a.aStar(sim,(move[0][0], move[0][1], move[0][2]+1, 'd'), euclidean_sim)
+        #drone_moves += len(pathToBlock) #one too many, without subtracting accounts for attach
+        #sim = pathToBlock[0]
+        ##for step in pathToBlock:
+        ##    print(step.to_list())
 
-        sim.take_action((0,0,0,"attach"))
+        #sim.take_action((0,0,0,"attach"))
 
-        pathToDest = a.aStar(sim,(move[1][0], move[1][1], move[1][2]+1, 'd'), euclidean_sim)
-        drone_moves += len(pathToDest)
-        sim = pathToDest[0]
-        #for step in pathToDest:
-        #    print(step.to_list())
+        #pathToDest = a.aStar(sim,(move[1][0], move[1][1], move[1][2]+1, 'd'), euclidean_sim)
+        #drone_moves += len(pathToDest)
+        #sim = pathToDest[0]
+        ##for step in pathToDest:
+        ##    print(step.to_list())
 
-        sim.take_action((0,0,0,"release"))
+        #sim.take_action((0,0,0,"release"))
 
-        #sim.map[move[1][0]][move[1][2]][move[1][1]] = 'black'
-        print(drone_moves)
+        ##sim.map[move[1][0]][move[1][2]][move[1][1]] = 'black'
+        #print(drone_moves)
         #plt.plot(sim)
 
 

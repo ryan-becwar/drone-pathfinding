@@ -15,4 +15,4 @@
 -3 -38 0 blue
 -20 -21 0 black
 1 1 0 blue
-0 0 10 drone
+0 0 10 d
