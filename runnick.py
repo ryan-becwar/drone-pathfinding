@@ -9,9 +9,10 @@ import tools.goalAssigner as assign
 def testF(possible_commandsF):
     print(possible_commandsF())
 
-#sim = Simulator.from_file("gamestates/reversestack")
-sim = Simulator.from_file("gamestates/draper/state3")
-#goals = [(0, 1, 0, 'black'), (0, 1, 15, 'red')]
+#sim = Simulator.from_file("gamestates/reversestack")  #min parameters(w,l,h)
+#sim = Simulator.from_file("gamestates/draper/state1") #(?,?,?)
+#sim = Simulator.from_file("gamestates/draper/state2") #(101,101,3)
+sim = Simulator.from_file("gamestates/draper/state3") #(11,11,18)
 
 plt.plot(sim)
 
@@ -25,11 +26,15 @@ plt.plot(sim)
 #goal = (5,3,4,'red')
 
 
+goals1 = [(0,1,0,'black'),(0,1,15,'red')]
+goals2 = [(0,0,1,'black'),(0,0,0,'red')]
 
-goals = [('?', '?', 0, '?'), ('?', '?', 1, '?'), ('?', '?', 2, '?'), ('?', '?', 3, '?'), ('?', '?', 4, '?'), ('?', '?', 5, '?'), ('?', '?', 6, '?'), ('?', '?', 7, '?'), ('?', '?', 8, '?'), ('?', '?', 9, '?'), ('?', '?', 10, '?'), ('?', '?', 11, '?'), ('?', '?', 12, '?'), ('?', '?', 13, '?'), ('?', '?', 14, '?'), ('?', '?', 15, '?'), ('?', '?', 16, '?'), ]
+goals3 = [('?', '?', 0, '?'), ('?', '?', 1, '?'), ('?', '?', 2, '?'), ('?', '?', 3, '?'), ('?', '?', 4, '?'), ('?', '?', 5, '?'), ('?', '?', 6, '?'), ('?', '?', 7, '?'), ('?', '?', 8, '?'), ('?', '?', 9, '?'), ('?', '?', 10, '?'), ('?', '?', 11, '?'), ('?', '?', 12, '?'), ('?', '?', 13, '?'), ('?', '?', 14, '?'), ('?', '?', 15, '?'), ('?', '?', 16, '?'), ]
 
 
-block_goals = assign.assignGoals(sim, goals)
+#block_goals = assign.assignGoals(sim, goals1)
+#block_goals = assign.assignGoals(sim, goals2)
+block_goals = assign.assignGoals(sim, goals3)
 res = where_does_my_block_want_to_move(sim, block_goals)
 
 start_time = time.time()

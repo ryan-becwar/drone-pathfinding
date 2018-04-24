@@ -38,7 +38,9 @@ def run():
         xd0, zd0, yd0, _ = action[0]
         xd1, zd1, yd1 = action[1]
 
+        print("BEFORE", sim.to_list())
         droneResult1 = a.aStar(sim,(xd0, zd0, yd0+1,'d'), euclidean_sim)
+        print("AFTER", sim.to_list())
         droneResult2 = a.aStar(sim,(xd1, zd1, yd1+1,'d'), euclidean_sim)
         dronePath.extend(droneResult1)
         dronePath.extend(droneResult2)

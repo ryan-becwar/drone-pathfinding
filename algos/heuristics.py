@@ -1,9 +1,11 @@
 import numpy as np
 import random
 import tools.plot as plt
+import algos.iterativeAstar as a
 
 
 def where_does_my_block_want_to_move(sim, block_goals):
+    drone_moves=0
     
     while True:
         
@@ -103,9 +105,26 @@ def where_does_my_block_want_to_move(sim, block_goals):
             goal = block_goals[move[0]]
             del block_goals[move[0]]
             block_goals[(move[1][0], move[1][1], move[1][2], move[0][3])] = goal
-        sim.take_block_action(move)
+        #sim.take_block_action(move)
+        pathToBlock = a.aStar(sim,(move[0][0], move[0][1], move[0][2]+1, 'd'), euclidean_sim)
+        drone_moves += len(pathToBlock) #one too many, without subtracting accounts for attach
+        sim = pathToBlock[0]
+        #for step in pathToBlock:
+        #    print(step.to_list())
+
+        sim.take_action((0,0,0,"attach"))
+
+        pathToDest = a.aStar(sim,(move[1][0], move[1][1], move[1][2]+1, 'd'), euclidean_sim)
+        drone_moves += len(pathToDest)
+        sim = pathToDest[0]
+        #for step in pathToDest:
+        #    print(step.to_list())
+
+        sim.take_action((0,0,0,"release"))
+
         #sim.map[move[1][0]][move[1][2]][move[1][1]] = 'black'
-        plt.plot(sim)
+        print(drone_moves)
+        #plt.plot(sim)
 
 
 def goal_block_complete(block, goal):

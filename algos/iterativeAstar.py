@@ -32,9 +32,9 @@ def aStar(start, goal, heuristicF):
     while open:
         #current is the node with the smallest fscore
         current = hashdict[min(open, key=fscore.get)]
-        print(current.to_list())
-        if current.attached:
-            print("ATTACHED")
+        #print(current.to_list())
+        #if current.attached:
+            #print("ATTACHED")
         currentHash = current.__hash__()
         #print(current.currentStateMap)
         if current.goalTest(goal):
