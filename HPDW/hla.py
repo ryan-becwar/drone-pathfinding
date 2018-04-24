@@ -123,6 +123,7 @@ class MoveBlk:
         A.__init__(self, name="MoveBlk", startState=startState)
         self.srcxz=srcxz
         self.destxz=destxz   
+        self.plan = []
         
     def __repr__(self):
         return "MoveBlk:" + repr(self.srcxz) + "->" + repr(self.destxz)
@@ -130,8 +131,7 @@ class MoveBlk:
     def evalPlans(self):
         # eval plans required to achieve this, cost and endstate, set them on base action.
         # drone has to move to top of srcxz, attach, move to top of destxz, release
-        plans = []
-        plan = Plan(startState=self.startState)
+       
         cost = 0
         # move to top of srcxz
         x = self.srcxz[0]
@@ -140,13 +140,13 @@ class MoveBlk:
         moveToSrcTop = MoveDrone(startState=self.startState, droneDest=(x,z,y))
         moveToSrcTop.evalPlans()
         cost = cost + moveToSrcTop.cost
-        plan.addAction(moveToSrcTop)
+        self.plan.append(moveToSrcTop)
 #         print("After {} with cost {} end state is \n {}".format(moveToSrcTop, moveToSrcTop.cost, moveToSrcTop.endState))
         
         attachToTopOfSrc = Attach(startState=moveToSrcTop.endState)
         attachToTopOfSrc.evalPlans()
         cost = cost + attachToTopOfSrc.cost
-        plan.addAction(attachToTopOfSrc)
+        self.plan.append(attachToTopOfSrc)
 #         print("After {} with cost {} end state is \n {}".format(attachToTopOfSrc, attachToTopOfSrc.cost, attachToTopOfSrc.endState))  
         
         x = self.destxz[0]
@@ -156,28 +156,32 @@ class MoveBlk:
         moveToDestTop = MoveDrone(startState=attachToTopOfSrc.endState, droneDest=(x,z,y))
         moveToDestTop.evalPlans()
         cost = cost + moveToDestTop.cost
-        plan.addAction(moveToDestTop)
+        self.plan.append(moveToDestTop)
 #         print("After {} with cost {} end state is \n {}".format(moveToDestTop, moveToDestTop.cost, moveToDestTop.endState))
         
         releaseFromTopOfDest = Release(startState=moveToDestTop.endState)
         releaseFromTopOfDest.evalPlans()
         cost = cost + releaseFromTopOfDest.cost
-        plan.addAction(releaseFromTopOfDest)
+        self.plan.append(releaseFromTopOfDest)
 #         print("After {} with cost {} end state is \n {}".format(releaseFromTopOfDest, releaseFromTopOfDest.cost, releaseFromTopOfDest.endState))
         
         self.endState = releaseFromTopOfDest.endState
         self.cost = cost
 #         print("total cost is ", self.cost)
-        plans.append(plan)
+#         plans.append(plan)
         
         return
+    
+    def execute(self):
+        print("Executing ", self.name)        
+        for action in self.plan:
+            action.execute()
 
 # A* will be required for shorted path for MoveDrone
 class MoveDrone:
     def __init__(self, startState, droneDest):
-        A.__init__(self, name="MoveDrone", startState=startState)
-        
-        self.droneDest = droneDest   
+        A.__init__(self, name="MoveDrone", startState=startState)        
+        self.droneDest = droneDest  
         
     def __repr__(self):
         return "MoveDrone" + "->" + repr(self.droneDest)
@@ -190,9 +194,19 @@ class MoveDrone:
         
         source = self.startState.dronePos
         dest = self.endState.dronePos        
-        self.cost = euclidean(source, dest)
+        self.cost = euclidean(source, dest)        
+        return
+    
+#     def execute(self):
+#         print("Executing ", self.name)
+#         result = dronePathSearch(self.startState, moveDroneCost, self.endState)
+#         return result
+    
+#     def execute(self):
+#         startState=self.startState
+#         result = dronePathSearch(self.startState, moveDroneCost, goal, maxAttempts = 1000)
+#         return 
         
-        return 
 
 class Attach(A):
     def __init__(self, startState):
@@ -206,6 +220,10 @@ class Attach(A):
         self.endState = resultingState
         self.cost = stepCost
         return 
+    
+#     def execute(self):
+#         print("Executing ", self.name)
+        
 
 class Release(A):
     def __init__(self, startState):
@@ -219,7 +237,9 @@ class Release(A):
         self.endState = resultingState
         self.cost = stepCost
         return 
-      
+    
+#     def execute(self):
+#         print("Executing ", self.name)
     
 class PA(A):
     def __init__(self, startState, actionTuple):
@@ -249,8 +269,4 @@ def getPossiblePlansFromGoal(startState, goal):
         plan.addAction(BuildTower(startState=startState, xz=possibletower[0], tower=possibletower[1]))
         plans.append(plan)          
     return plans
-
-
-
-# print(getPossibleTowers(state3, goal3))
     

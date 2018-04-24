@@ -17,21 +17,21 @@ class Stats:
     def __init__(self, attempts):
         self.attempts = attempts
         
-def dronePathSearch(startState, hF, goal, maxAttempts=100, doMaxF = False):
+def dronePathSearch(startState, hF, goal, maxAttempts=1000, doMaxF = False):
     h = hF(goal, startState)
     startNode = Node(state=startState, f=0+h, g=0, h=h)
     stats = Stats(attempts=maxAttempts)
     return dronePathSearchHelper(startNode, hF, goal, float('inf'), doMaxF, stats)
 
 def dronePathSearchHelper(parentNode, hF, goal, fmax, doMaxF, stats):
-    print("Attempts left ", stats.attempts)
+#     print("Attempts left ", stats.attempts)
     stats.attempts = stats.attempts - 1 
     if stats.attempts == -1:
         return ("failure", float('inf'))
 #     print("Current state \n", parentNode.state)
     
     if parentNode.state.dronePos == goal.dronePos: 
-        return ([parentNode.state], parentNode.g) # no actions needed as we are desired drone pos now
+        return ([parentNode], parentNode.g) # no actions needed as we are desired drone pos now
     
     ## Construct list of children nodes with f, g, and h values
     
@@ -74,7 +74,7 @@ def dronePathSearchHelper(parentNode, hF, goal, fmax, doMaxF, stats):
         # expand best child, reassign its f value to be returned value
         result, bestChild.f = dronePathSearchHelper(bestChild, hF, goal, min(fmax,alternativef), doMaxF, stats)
         if result is not "failure":               
-            result.insert(0, parentNode.state)     
+            result.insert(0, parentNode)     
             return (result, bestChild.f)      
     return ("failure", float('inf'))
 
@@ -125,7 +125,7 @@ def getPossibleBlkMovesFromPossibleTowers(currentState, goalState):
                     hlas.append(hla)    
     return hlas
 
-def blkMovesSearch(startState, hF, goalState, maxAttempts=100, doMaxF = False):
+def blkMovesSearch(startState, hF, goalState, maxAttempts=1000, doMaxF = False):
     goal=goalState.fillWCWithPossibleTowers(getPossibleTowers(startState, goalState))
     h = hF(currentState=startState, goalState=goal)
     startNode = Node(state=startState, f=0+h, g=0, h=h)
@@ -140,7 +140,7 @@ def blkMovesSearchHelper(parentNode, hF, goal, fmax, doMaxF, stats):
 #     print("Current state \n", parentNode.state)
     
     if parentNode.state.isGoal(goal):
-        return ([parentNode.state], parentNode.g) # no actions needed
+        return ([parentNode], parentNode.g) # no actions needed
     ## Construct list of children nodes with f, g, and h values
    
     blkMoveHlas = getPossibleBlkMovesFromPossibleTowers(currentState=parentNode.state, goalState=goal)
@@ -175,7 +175,6 @@ def blkMovesSearchHelper(parentNode, hF, goal, fmax, doMaxF, stats):
         # expand best child, reassign its f value to be returned value
         result, bestChild.f = blkMovesSearchHelper(bestChild, hF, goal, min(fmax,alternativef), doMaxF, stats)
         if result is not "failure":               
-            result.insert(0, parentNode.state)     
+            result.insert(0, parentNode)     
             return (result, bestChild.f)      
     return ("failure", float('inf'))
-
