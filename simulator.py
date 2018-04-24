@@ -2,7 +2,7 @@ from copy import deepcopy
 import numpy as np
 WIDTH = 11 #x dimension
 LENGTH = 11 #z dimension
-HEIGHT = 6 #y dimension (vertical)
+HEIGHT = 18 #y dimension (vertical)
 
 def euclidean(source, dest):
     return np.sqrt((source[0]-dest[0])**2 + (source[1]-dest[1])**2 + (source[2]-dest[2])**2)
@@ -13,6 +13,7 @@ class Simulator:
         self.attached = state[1]
         #self.currentStateMap = state[2]
         self.drone_pos = self.find_drone()
+        self.stack_pos = (4,4)
 
     @classmethod
     def from_file(cls, filename):
@@ -84,10 +85,10 @@ class Simulator:
             print("Ending position not empty", endpos)
             return self.to_list()
         below = self.map[x1][z1][:y1] #list of all blocks below destination
-        if 'd' in below or ' ' in below:
+        #if 'd' in below or ' ' in below:
             #print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below, self.currentStateMap)
-            print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below)
-            return self.to_list()
+            #print("Destination not supported by blocks", endpos, "src: ", startpos,  "column: ", below)
+            #return self.to_list()
 
         #update blocks in statemap
         #self.currentStateMap[(x0,z0)][y0] = ' '
@@ -247,7 +248,7 @@ class Simulator:
         return y == -1 or (self.map[x][z][y] != " " and self.map[x][z][y] != "d")
     def pillar_height(self, x, z):
         for y in range(len(self.map[x][z])):
-            if space_empty(x, z, y):
+            if self.space_empty(x, z, y):
                 return y
 
     #returns the state as a list of objects
@@ -260,7 +261,10 @@ class Simulator:
 
     #return a list of positions on the map that a block could be placed, ignoring the position that block is already
     def top_level_positions(self, ignore):
-        return [(x, z, y) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if (x, z) != ignore and self.space_empty(x, z, y) and self.space_taken(x, z, y - 1)]
+        #return [(x, z, y) for x in range(len(self.map)) for z in range(len(self.map[x])) for y in range(len(self.map[x][z])) if (x, z) != ignore and self.space_empty(x, z, y) and self.space_taken(x, z, y - 1)]
+        stack_poss = [(4,4),(4,3),(3,2),(2,3),(2,2)]
+        return [(x,z,next(y for y in range(len(self.map[x][z])) if self.space_empty(x,z,y))) for x in range(len(self.map)) for z in range(len(self.map[x])) if (x, z) != ignore] #does not iterate over every y
+        #return [(x,z,next(y for y in range(len(self.map[x][z])) if self.space_empty(x,z,y))) for x in range(len(self.map)) for z in range(len(self.map[x])) if ((x, z) != ignore and (self.space_taken(x,z,0) or (x,z) in stack_poss))] #does not iterate over every y
 
     def possible_block_moves(self):
         actions = []
