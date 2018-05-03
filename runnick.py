@@ -5,14 +5,11 @@ import algos.recursiveBestFirstAstar as ra
 import time
 import tools.plot as plt
 import tools.goalAssigner as assign
+import numpy
 
 def testF(possible_commandsF):
     print(possible_commandsF())
 
-#sim = Simulator.from_file("gamestates/reversestack")  #min parameters(w,l,h)
-sim = Simulator.from_file("gamestates/draper/state1") #(?,?,?)
-#sim = Simulator.from_file("gamestates/draper/state2") #(101,101,3)
-#sim = Simulator.from_file("gamestates/draper/state3") #(11,11,18)
 
 #plt.plot(sim)
 
@@ -31,12 +28,28 @@ goals2 = [(0,0,1,'black'),(0,0,0,'red')]
 
 goals3 = [('?', '?', 0, '?'), ('?', '?', 1, '?'), ('?', '?', 2, '?'), ('?', '?', 3, '?'), ('?', '?', 4, '?'), ('?', '?', 5, '?'), ('?', '?', 6, '?'), ('?', '?', 7, '?'), ('?', '?', 8, '?'), ('?', '?', 9, '?'), ('?', '?', 10, '?'), ('?', '?', 11, '?'), ('?', '?', 12, '?'), ('?', '?', 13, '?'), ('?', '?', 14, '?'), ('?', '?', 15, '?'), ('?', '?', 16, '?'), ]
 
-start_time = time.time()
 
-block_goals = assign.assignGoals(sim, goals1)
-#block_goals = assign.assignGoals(sim, goals2)
-#block_goals = assign.assignGoals(sim, goals3)
-res = where_does_my_block_want_to_move(sim, block_goals)
+times = []
+for i in range(1):
+    #sim = Simulator.from_file("gamestates/reversestack")  #min parameters(w,l,h)
+    #sim = Simulator.from_file("gamestates/draper/state1") #(?,?,?)
+    #sim = Simulator.from_file("gamestates/draper/state2") #(101,101,3)
+    sim = Simulator.from_file("gamestates/draper/input3.txt") #(11,11,18)
 
-print()
-print("Time elapsed", time.time() - start_time)
+    start_time = time.time()
+    #block_goals = assign.assignGoals(sim, goals1)
+    #block_goals = assign.assignGoals(sim, goals2)
+    block_goals = assign.assignGoals(sim, goals3)
+    res = where_does_my_block_want_to_move(sim, block_goals)
+    runtime = time.time() - start_time
+
+    times.append(runtime)
+
+
+    print()
+    print("Time elapsed", runtime)
+
+arr = numpy.array(times)
+print(times)
+print(numpy.mean(arr))
+print(numpy.std(arr))

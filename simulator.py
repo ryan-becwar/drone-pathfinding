@@ -1,7 +1,7 @@
 from copy import deepcopy
 import numpy as np
-WIDTH = 11 #x dimension
-LENGTH = 11 #z dimension
+WIDTH = 99 #x dimension
+LENGTH = 99 #z dimension
 HEIGHT = 18 #y dimension (vertical)
 
 def euclidean(source, dest):
