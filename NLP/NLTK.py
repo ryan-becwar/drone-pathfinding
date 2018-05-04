@@ -1,5 +1,10 @@
 # https://gist.github.com/pbexe/7262a1082c6f13d230fd
+
+from BlockSpec import *
+from TowerSpec import *  
+
 import nltk
+
 
 def prepare(text):
 	sentences = nltk.sent_tokenize(text)
