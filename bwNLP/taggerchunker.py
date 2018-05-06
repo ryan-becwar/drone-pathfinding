@@ -75,14 +75,14 @@ def getTaggedTextForChunking(text):
     
     return taggedText
 
-#TOWERSPEC: {<DT|IN>?<JJ.*|NN.*|IN|DT>*<CD>*<JJ.*|NN.*|IN|DT>*<XZPOS>}
-grammar = r"""
-              
-              BLKCOLORSPEC: {<DT|IN>?<BLKCOLOR><BLK>}
-              RELATIVEBLKSPEC: {<BLKCOLORSPEC><IN|JJR|RBR><BLKCOLORSPEC>} 
+grammar = r"""              
+              BLKCOLORSPEC: {(<DT|IN>?<BLKCOLOR><.*>?<.*>?<BLK>)|(<DT|IN>?<BLK><.*>?<.*>?<BLKCOLOR>)}               
               NUMERICBLKSPEC: {<BLKCOLORSPEC><IN|DT>*<NN.*|JJ.*>*<CD|XZYPOS>}
-              TEXTBLKSPEC: {<BLKCOLORSPEC><IN|DT>*<NN>}
-              BLKSPEC: {<NUMERICBLKSPEC|TEXTBLKSPEC>}
+              TEXTBLKSPEC: {<BLKCOLORSPEC><IN|DT>+<NN|JJ>}              
+              BLKSPEC: {<NUMERICBLKSPEC|TEXTBLKSPEC>}  
+              RELATIVEBLKSPECPOSSESIVE: {<BLKSPEC|BLKCOLORSPEC><IN|CC|VBG><BLKSPEC|BLKCOLORSPEC><IN|RBR|JJR><PRP|BLKSPEC|BLKCOLORSPEC>}
+              RELATIVEBLKSPEC: {<BLKSPEC|BLKCOLORSPEC><IN|JJR|RBR><BLKSPEC|BLKCOLORSPEC>}
+              
               BLKSSPEC: {<DT|NN|CD><BLKS>+}
               TOWERPOSSPEC: {<DT|IN|NN|CC>*<XZPOS>}
               TOWERHTSPECINBLKS: {<BLKSSPEC><JJ|VBP|IN|JJR|RBR>}
