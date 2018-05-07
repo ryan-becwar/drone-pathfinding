@@ -16,7 +16,7 @@ xzyPosRegexPattern = nltk.re.compile(xzyPosRegex)
 
 def preprocess_text(text):    
     def clean_coordinates(matchobj):
-        cleaned = matchobj.group(0).replace(' ', '')
+        cleaned = matchobj.group(3).replace(' ', '')
         return cleaned 
     
     lowerText = text.lower()    
@@ -81,12 +81,12 @@ grammar = r"""
               TEXTBLKSPEC: {<BLKCOLORSPEC><IN|DT>+<NN|JJ>}              
               BLKSPEC: {<NUMERICBLKSPEC|TEXTBLKSPEC>}  
               RELATIVEBLKSPECPOSSESIVE: {<BLKSPEC|BLKCOLORSPEC><IN|CC|VBG><BLKSPEC|BLKCOLORSPEC><IN|RBR|JJR><PRP|BLKSPEC|BLKCOLORSPEC>}
-              RELATIVEBLKSPEC: {<BLKSPEC|BLKCOLORSPEC><IN|JJR|RBR><BLKSPEC|BLKCOLORSPEC>}
+              RELATIVEBLKSPEC: {<BLKSPEC|BLKCOLORSPEC><NN|IN|JJR|RBR><BLKSPEC|BLKCOLORSPEC>}
               
-              BLKSSPEC: {<DT|NN|CD><BLKS>+}
+              BLKSSPEC: {<DT|NN|CD><BLKS>+}              
+              TOWERHTSPECINBLKS: {<BLKSSPEC><JJ|VBP|IN|JJR|RBR>*}
+              TOWERHTSPECRAW: {<DT|IN>?<NN><IN>*<JJ|JJR|RBR><CD>} 
               TOWERPOSSPEC: {<DT|IN|NN|CC>*<XZPOS>}
-              TOWERHTSPECINBLKS: {<BLKSSPEC><JJ|VBP|IN|JJR|RBR>}
-              TOWERHTSPECRAW: {<DT|IN>?<NN><IN>*<JJ|JJR|RBR><CD>}            
               
            """
 cp = nltk.RegexpParser(grammar) 
